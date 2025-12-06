@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageSquare, FileText, Globe, Settings, Database } from 'lucide-react';
+import { MessageSquare, FileText, Globe, Settings, Database, FileCode } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import './Sidebar.css';
 
@@ -13,6 +13,7 @@ const Sidebar: React.FC = () => {
     { icon: FileText, label: 'Documents', path: '/documents' },
     { icon: Globe, label: 'Websites', path: '/websites' },
     { icon: Database, label: 'Models', path: '/models' },
+    { icon: FileCode, label: 'Prompts', path: '/prompts' },
   ];
 
   return (

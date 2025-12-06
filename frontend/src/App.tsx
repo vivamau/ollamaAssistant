@@ -3,8 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import ChatInterface from './components/ChatInterface';
 import DocumentUploader from './components/DocumentUploader';
+import DocumentList from './components/DocumentList';
 import WebsiteInput from './components/WebsiteInput';
 import ModelSelector from './components/ModelSelector';
+import PromptManager from './components/PromptManager';
 import Settings from './components/Settings';
 import './App.css';
 
@@ -13,6 +15,7 @@ const DocumentsPage = () => (
   <div className="page-container">
     <h2 className="page-title">Documents</h2>
     <DocumentUploader />
+    <DocumentList />
   </div>
 );
 
@@ -30,6 +33,12 @@ const ModelsPage = () => (
   </div>
 );
 
+const PromptsPage = () => (
+  <div className="page-container">
+    <PromptManager />
+  </div>
+);
+
 function App() {
   return (
     <Router>
@@ -42,6 +51,7 @@ function App() {
             <Route path="/documents" element={<DocumentsPage />} />
             <Route path="/websites" element={<WebsitesPage />} />
             <Route path="/models" element={<ModelsPage />} />
+            <Route path="/prompts" element={<PromptsPage />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>

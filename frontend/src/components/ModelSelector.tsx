@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Database, Download, Check, AlertTriangle, Loader2 } from 'lucide-react';
+import { Database, Download, Check, AlertTriangle, Loader2, Trash2 } from 'lucide-react';
 import './Components.css';
 
 interface Model {
@@ -20,6 +20,7 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ onSelect, selectedModel }
   const [pulling, setPulling] = useState(false);
   const [pullProgress, setPullProgress] = useState<{ status: string; completed?: number; total?: number } | null>(null);
   const [newModelName, setNewModelName] = useState('');
+  const [deletingModel, setDeletingModel] = useState<string | null>(null);
 
   useEffect(() => {
     fetchModels();
@@ -98,6 +99,31 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ onSelect, selectedModel }
     return gb >= 1 ? `${gb.toFixed(2)} GB` : `${mb.toFixed(1)} MB`;
   };
 
+  const handleDeleteModel = async (modelName: string) => {
+    if (!confirm(`Are you sure you want to delete the model "${modelName}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    setDeletingModel(modelName);
+    try {
+      const response = await fetch(`http://localhost:3000/api/models/${encodeURIComponent(modelName)}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        await fetchModels();
+      } else {
+        const error = await response.json();
+        alert(`Failed to delete model: ${error.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error deleting model:', error);
+      alert('Failed to delete model');
+    } finally {
+      setDeletingModel(null);
+    }
+  };
+
 
   return (
     <div className="model-selector-container">
@@ -117,16 +143,42 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ onSelect, selectedModel }
             {models.map((model) => (
               <div
                 key={model.name}
-                onClick={() => onSelect?.(model.name)}
                 className={`model-card ${selectedModel === model.name ? 'selected' : 'idle'}`}
+                style={{ position: 'relative' }}
               >
-                <div className="model-header">
-                  <h4 className="font-medium text-lg">{model.name}</h4>
-                  {selectedModel === model.name && <Check className="text-blue-500" size={20} />}
-                </div>
-                <div className="model-meta">
-                  <span>{formatSize(model.size)}</span>
-                  <span>{new Date(model.modified_at).toLocaleDateString()}</span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteModel(model.name);
+                  }}
+                  disabled={deletingModel === model.name}
+                  className="table-action-btn table-action-danger"
+                  title="Delete model"
+                  style={{ 
+                    position: 'absolute', 
+                    top: '0.75rem', 
+                    right: '0.75rem',
+                    zIndex: 10
+                  }}
+                >
+                  {deletingModel === model.name ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <Trash2 size={16} />
+                  )}
+                </button>
+                <div 
+                  onClick={() => onSelect?.(model.name)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="model-header">
+                    <h4 className="font-medium text-lg" style={{ paddingRight: '2rem' }}>{model.name}</h4>
+                    {selectedModel === model.name && <Check className="text-blue-500" size={20} />}
+                  </div>
+                  <div className="model-meta">
+                    <span>{formatSize(model.size)}</span>
+                    <span>{new Date(model.modified_at).toLocaleDateString()}</span>
+                  </div>
                 </div>
               </div>
             ))}

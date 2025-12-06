@@ -30,6 +30,10 @@ export class OllamaService {
   async createModel(name: string, modelfile: string) {
     return await this.ollama.create({ model: name, modelfile, stream: true });
   }
+
+  async deleteModel(name: string) {
+    return await this.ollama.delete({ model: name });
+  }
 }
 
 export const ollamaService = new OllamaService();

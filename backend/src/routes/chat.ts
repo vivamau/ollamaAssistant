@@ -1,6 +1,9 @@
 import express from 'express';
+import fs from 'fs';
+import path from 'path';
 import { ollamaService } from '../services/OllamaService';
 import { vectorStore } from '../services/VectorStore';
+import { databaseService } from '../services/DatabaseService';
 
 const router = express.Router();
 
@@ -34,6 +37,130 @@ router.post('/', async (req, res) => {
   } catch (error) {
     console.error('Error in chat:', error);
     res.status(500).json({ error: 'Chat failed' });
+  }
+});
+
+
+
+router.post('/save', async (req, res) => {
+  try {
+    const { filename, content, startTime, modelsUsed } = req.body;
+    if (!filename || !content) {
+      return res.status(400).json({ error: 'Filename and content are required' });
+    }
+
+    const chatsDir = path.join(__dirname, '../../chats');
+    if (!fs.existsSync(chatsDir)) {
+      fs.mkdirSync(chatsDir, { recursive: true });
+    }
+
+    const filePath = path.join(chatsDir, filename);
+    fs.writeFileSync(filePath, content);
+
+    // Save to database if startTime and modelsUsed are provided
+    let chatId = null;
+    if (startTime && modelsUsed) {
+      chatId = await databaseService.saveChat({
+        startTime,
+        modelsUsed,
+        filename
+      });
+    }
+
+    res.json({ success: true, path: filePath, chatId });
+  } catch (error) {
+    console.error('Error saving chat:', error);
+    res.status(500).json({ error: 'Failed to save chat' });
+  }
+});
+
+router.get('/', async (req, res) => {
+  try {
+    const chats = await databaseService.getChats();
+    res.json(chats);
+  } catch (error) {
+    console.error('Error getting chats:', error);
+    res.status(500).json({ error: 'Failed to get chats' });
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const filename = await databaseService.deleteChat(id);
+    
+    if (filename) {
+      const filePath = path.join(__dirname, '../../chats', filename);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting chat:', error);
+    res.status(500).json({ error: 'Failed to delete chat' });
+  }
+});
+
+router.get('/:id/content', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const chat = await databaseService.getChat(id);
+    
+    if (!chat) {
+      return res.status(404).json({ error: 'Chat not found' });
+    }
+
+    const filePath = path.join(__dirname, '../../chats', chat.filename);
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Chat file not found' });
+    }
+
+    const content = fs.readFileSync(filePath, 'utf-8');
+    
+    // Parse markdown content to messages
+    const messages = [];
+    const lines = content.split('\n');
+    let currentMessage: any = null;
+
+    for (const line of lines) {
+      // Check for message headers
+      // Format: ### Role [Date Time] (Model: Name)
+      const headerMatch = line.match(/^### (User|Assistant) \[(.*?)\](?: \(Model: (.*?)\))?$/);
+      const systemMatch = line.match(/^\*\*System\*\* \[(.*?)\]$/);
+
+      if (headerMatch) {
+        if (currentMessage) messages.push(currentMessage);
+        currentMessage = {
+          role: headerMatch[1].toLowerCase(),
+          timestamp: headerMatch[2], // Keep as string for now, frontend will parse
+          model: headerMatch[3],
+          content: ''
+        };
+      } else if (systemMatch) {
+        if (currentMessage) messages.push(currentMessage);
+        currentMessage = {
+          role: 'system',
+          timestamp: systemMatch[1],
+          content: ''
+        };
+      } else if (currentMessage) {
+        if (line.trim() === '---') continue; // Skip separator
+        currentMessage.content += line + '\n';
+      }
+    }
+    if (currentMessage) messages.push(currentMessage);
+
+    // Clean up content (trim extra newlines)
+    messages.forEach(m => {
+      m.content = m.content.trim();
+    });
+
+    res.json({ messages });
+  } catch (error) {
+    console.error('Error getting chat content:', error);
+    res.status(500).json({ error: 'Failed to get chat content' });
   }
 });
 

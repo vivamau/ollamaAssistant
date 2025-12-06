@@ -13,7 +13,19 @@ export class VectorStore {
 
   constructor() {}
 
+  private async ensureEmbeddingModel() {
+    const models = await ollamaService.listModels();
+    const hasModel = models.models.some(m => m.name.includes(this.embeddingModel));
+    if (!hasModel) {
+      console.log(`Embedding model '${this.embeddingModel}' not found. Pulling it...`);
+      await ollamaService.pullModel(this.embeddingModel);
+      console.log(`Embedding model '${this.embeddingModel}' pulled successfully.`);
+    }
+  }
+
   async addDocument(content: string, metadata: any) {
+    await this.ensureEmbeddingModel();
+
     // Simple chunking strategy (split by paragraphs or fixed size)
     // For now, let's split by paragraphs
     const paragraphs = content.split(/\n\s*\n/);
@@ -21,31 +33,43 @@ export class VectorStore {
     for (const paragraph of paragraphs) {
       if (paragraph.trim().length < 10) continue;
 
-      const embeddingResponse = await ollamaService.generateEmbeddings(this.embeddingModel, paragraph);
-      
-      this.chunks.push({
-        id: Math.random().toString(36).substring(7),
-        content: paragraph,
-        embedding: embeddingResponse.embedding,
-        metadata
-      });
+      try {
+        const embeddingResponse = await ollamaService.generateEmbeddings(this.embeddingModel, paragraph);
+        
+        this.chunks.push({
+          id: Math.random().toString(36).substring(7),
+          content: paragraph,
+          embedding: embeddingResponse.embedding,
+          metadata
+        });
+      } catch (error) {
+        console.error('Error generating embedding:', error);
+        throw error;
+      }
     }
   }
 
   async search(query: string, k: number = 3): Promise<DocumentChunk[]> {
-    const queryEmbeddingResponse = await ollamaService.generateEmbeddings(this.embeddingModel, query);
-    const queryEmbedding = queryEmbeddingResponse.embedding;
+    await this.ensureEmbeddingModel();
 
-    // Calculate cosine similarity
-    const similarities = this.chunks.map(chunk => ({
-      chunk,
-      score: this.cosineSimilarity(queryEmbedding, chunk.embedding)
-    }));
+    try {
+      const queryEmbeddingResponse = await ollamaService.generateEmbeddings(this.embeddingModel, query);
+      const queryEmbedding = queryEmbeddingResponse.embedding;
 
-    // Sort by score descending
-    similarities.sort((a, b) => b.score - a.score);
+      // Calculate cosine similarity
+      const similarities = this.chunks.map(chunk => ({
+        chunk,
+        score: this.cosineSimilarity(queryEmbedding, chunk.embedding)
+      }));
 
-    return similarities.slice(0, k).map(s => s.chunk);
+      // Sort by score descending
+      similarities.sort((a, b) => b.score - a.score);
+
+      return similarities.slice(0, k).map(s => s.chunk);
+    } catch (error) {
+      console.error('Error in vector search:', error);
+      throw error;
+    }
   }
 
   private cosineSimilarity(vecA: number[], vecB: number[]): number {
