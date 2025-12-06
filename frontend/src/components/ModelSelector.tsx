@@ -28,7 +28,7 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ onSelect, selectedModel }
 
   const fetchModels = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/models');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/models`);
       const data = await response.json();
       setModels(data.models || []);
     } catch (error) {
@@ -46,7 +46,7 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ onSelect, selectedModel }
     setPullProgress({ status: 'Starting download...' });
 
     try {
-      const response = await fetch('http://localhost:3000/api/models/pull', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/models/pull`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: newModelName }),
@@ -106,7 +106,7 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ onSelect, selectedModel }
 
     setDeletingModel(modelName);
     try {
-      const response = await fetch(`http://localhost:3000/api/models/${encodeURIComponent(modelName)}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/models/${encodeURIComponent(modelName)}`, {
         method: 'DELETE'
       });
 

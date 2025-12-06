@@ -26,7 +26,7 @@ const CreateModelModal: React.FC<CreateModelModalProps> = ({ documentId, onClose
 
   const fetchModels = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/models');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/models`);
       if (response.ok) {
         const data = await response.json();
         setModels(data.models || []);
@@ -48,7 +48,7 @@ const CreateModelModal: React.FC<CreateModelModalProps> = ({ documentId, onClose
     setLogs([]);
 
     try {
-      const response = await fetch('http://localhost:3000/api/models/create', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/models/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

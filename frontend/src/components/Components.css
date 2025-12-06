@@ -303,3 +303,109 @@
   transition: width 300ms ease-out;
   box-shadow: 0 0 10px var(--accent-glow);
 }
+
+/* Tables */
+.data-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+}
+
+.data-table th {
+  padding: 1rem;
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.data-row {
+  transition: background-color 200ms;
+}
+
+.data-row:hover {
+  background-color: var(--hover-bg);
+}
+
+.data-row:last-child td {
+  border-bottom: none;
+}
+
+.cell-date {
+  display: flex;
+  flex-direction: column;
+}
+
+.cell-time {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+/* Tags */
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* Actions */
+.table-action-btn {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  color: var(--text-tertiary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 200ms;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-action-btn:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-secondary);
+}
+
+.table-action-btn.table-action-danger:hover {
+  background-color: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+/* Shared Hover Class */
+.hover-bg:hover {
+  background-color: var(--hover-bg) !important;
+}

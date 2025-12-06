@@ -40,7 +40,7 @@ const ChatInterface: React.FC = () => {
 
   // Initial model fetch
   useEffect(() => {
-    fetch('http://localhost:3000/api/models')
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/models`)
       .then(res => res.json())
       .then(data => {
         if (data.models?.length > 0) {
@@ -92,7 +92,7 @@ const ChatInterface: React.FC = () => {
     try {
       abortControllerRef.current = new AbortController();
       
-      const response = await fetch('http://localhost:3000/api/chat', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -242,7 +242,7 @@ const ChatInterface: React.FC = () => {
       const startTime = chatStartTime ? Math.floor(chatStartTime.getTime() / 1000) : Math.floor(Date.now() / 1000);
       const modelsUsed = Array.from(modelsUsedInChat);
 
-      const response = await fetch('http://localhost:3000/api/chat/save', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chat/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -270,7 +270,7 @@ const ChatInterface: React.FC = () => {
 
   const handleHistoryClick = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/chat');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chat`);
       if (response.ok) {
         const data = await response.json();
         setSavedChats(data);
@@ -285,7 +285,7 @@ const ChatInterface: React.FC = () => {
 
   const handleLoadChat = async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/chat/${id}/content`);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chat/${id}/content`);
       if (response.ok) {
         const data = await response.json();
         
@@ -324,7 +324,7 @@ const ChatInterface: React.FC = () => {
 
   const handleDeleteChat = async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/chat/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chat/${id}`, {
         method: 'DELETE'
       });
       

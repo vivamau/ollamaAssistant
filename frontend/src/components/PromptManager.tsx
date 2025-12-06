@@ -37,7 +37,7 @@ const PromptManager: React.FC = () => {
 
   const fetchPrompts = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/prompts');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prompts`);
       if (response.ok) {
         const data = await response.json();
         setPrompts(data);
@@ -51,7 +51,7 @@ const PromptManager: React.FC = () => {
 
   const fetchModels = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/models');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/models`);
       if (response.ok) {
         const data = await response.json();
         setModels(data.models || []);
@@ -66,8 +66,8 @@ const PromptManager: React.FC = () => {
     
     try {
       const url = editingId 
-        ? `http://localhost:3000/api/prompts/${editingId}`
-        : 'http://localhost:3000/api/prompts';
+        ? `${import.meta.env.VITE_API_BASE_URL}/api/prompts/${editingId}`
+        : `${import.meta.env.VITE_API_BASE_URL}/api/prompts`;
       
       const method = editingId ? 'PUT' : 'POST';
       
@@ -104,7 +104,7 @@ const PromptManager: React.FC = () => {
     if (!confirm('Are you sure you want to delete this prompt?')) return;
     
     try {
-      const response = await fetch(`http://localhost:3000/api/prompts/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prompts/${id}`, {
         method: 'DELETE'
       });
 

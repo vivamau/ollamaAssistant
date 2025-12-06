@@ -15,7 +15,7 @@ const WebsiteInput: React.FC = () => {
     setStatus(null);
 
     try {
-      const response = await fetch('http://localhost:3000/api/websites/scrape', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/websites/scrape`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url }),

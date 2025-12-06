@@ -17,7 +17,7 @@ const DocumentList: React.FC = () => {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/documents');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/documents`);
       if (response.ok) {
         const data = await response.json();
         setDocuments(data);
@@ -94,7 +94,6 @@ const DocumentList: React.FC = () => {
                     <button
                       onClick={() => setSelectedDocId(doc.ID)}
                       className="context-toggle"
-                      style={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#94a3b8' }}
                     >
                       <Database size={16} />
                       Train Model
