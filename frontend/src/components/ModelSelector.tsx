@@ -129,7 +129,7 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ onSelect, selectedModel }
     <div className="model-selector-container">
       {/* Model List */}
       <div className="glass-panel" style={{ padding: '1.5rem' }}>
-        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
           <Database className="text-blue-500" />
           Available Models
         </h3>
@@ -188,14 +188,14 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ onSelect, selectedModel }
 
       {/* Pull Model */}
       <div className="glass-panel" style={{ padding: '1.5rem' }}>
-        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
           <Download className="text-green-500" />
           Pull New Model
         </h3>
         
         <div className="warning-alert">
           <AlertTriangle className="text-yellow-500 shrink-0" />
-          <p className="text-yellow-200 text-sm">
+          <p className="text-sm">
             Downloading models requires significant disk space and bandwidth. 
             Standard models range from 2GB to 8GB.
           </p>

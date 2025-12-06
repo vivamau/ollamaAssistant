@@ -62,7 +62,7 @@ const ChatHistoryModal: React.FC<ChatHistoryModalProps> = ({
                     >
                       <td>
                         <div className="history-date">
-                          <span className="font-medium text-white">
+                          <span className="font-medium" style={{ color: 'var(--text-primary)' }}>
                             {new Date(chat.chat_start_datetime * 1000).toLocaleDateString('en-GB', { 
                               day: 'numeric', month: 'short', year: 'numeric' 
                             })}

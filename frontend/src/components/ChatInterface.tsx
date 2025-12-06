@@ -372,7 +372,6 @@ const ChatInterface: React.FC = () => {
           <button
             onClick={handleNewChat}
             className="context-toggle"
-            style={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#94a3b8' }}
             title="New Chat"
           >
             <MessageSquarePlus size={16} />
@@ -397,8 +396,8 @@ const ChatInterface: React.FC = () => {
                     onClick={() => handleModelChange(model.name)}
                     className={`model-dropdown-item ${selectedModel === model.name ? 'active' : ''}`}
                   >
-                    <Bot size={16} style={{ color: '#f8fafc' }} />
-                    <span style={{ color: '#f8fafc' }}>{model.name}</span>
+                    <Bot size={16} />
+                    <span>{model.name}</span>
                   </button>
                 ))}
               </div>
@@ -478,22 +477,19 @@ const ChatInterface: React.FC = () => {
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setShowSaveDialog(false)}
-                className="close-btn"
-                style={{ padding: '0.5rem 1rem', backgroundColor: '#334155', borderRadius: '0.5rem' }}
+                className="close-btn btn-secondary"
               >
                 Cancel
               </button>
               <button
                 onClick={handleClearChat}
-                className="close-btn"
-                style={{ padding: '0.5rem 1rem', backgroundColor: '#dc2626', borderRadius: '0.5rem', color: 'white' }}
+                className="close-btn btn-danger"
               >
                 Don't Save
               </button>
               <button
                 onClick={() => handleSaveChat(true)}
-                className="close-btn"
-                style={{ padding: '0.5rem 1rem', backgroundColor: '#2563eb', borderRadius: '0.5rem', color: 'white' }}
+                className="close-btn btn-primary-action"
               >
                 Save
               </button>
@@ -610,8 +606,7 @@ const ChatInterface: React.FC = () => {
             type={loading ? "button" : "submit"}
             onClick={loading ? handleStopGeneration : undefined}
             disabled={!loading && !input.trim()}
-            className="send-btn"
-            style={loading ? { backgroundColor: '#dc2626' } : {}}
+            className={`send-btn ${loading ? 'loading' : ''}`}
           >
             {loading ? <StopCircle size={20} /> : <Send size={20} />}
           </button>

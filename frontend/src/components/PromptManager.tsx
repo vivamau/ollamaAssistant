@@ -141,7 +141,6 @@ const PromptManager: React.FC = () => {
             setShowForm(!showForm);
           }}
           className="context-toggle"
-          style={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#94a3b8' }}
         >
           <Plus size={16} />
           New Prompt
@@ -150,18 +149,18 @@ const PromptManager: React.FC = () => {
 
       {showForm && (
         <div style={{ 
-          backgroundColor: '#1e293b', 
-          border: '1px solid #334155', 
+          backgroundColor: 'var(--bg-secondary)', 
+          border: '1px solid var(--border-color)', 
           borderRadius: '0.75rem', 
           padding: '1.5rem',
           marginBottom: '2rem'
         }}>
-          <h3 style={{ color: '#f1f5f9', marginBottom: '1rem', fontSize: '1.125rem', fontWeight: '600' }}>
+          <h3 style={{ color: 'var(--text-primary)', marginBottom: '1rem', fontSize: '1.125rem', fontWeight: '600' }}>
             {editingId ? 'Edit Prompt' : 'New Prompt'}
           </h3>
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                 Prompt
               </label>
               <textarea
@@ -174,7 +173,7 @@ const PromptManager: React.FC = () => {
               />
             </div>
             <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                 Tags (comma-separated)
               </label>
               <input
@@ -187,7 +186,7 @@ const PromptManager: React.FC = () => {
               />
             </div>
             <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                 Associated Models (optional)
               </label>
               <div style={{ 
@@ -197,9 +196,9 @@ const PromptManager: React.FC = () => {
                 maxHeight: '200px',
                 overflowY: 'auto',
                 padding: '0.5rem',
-                backgroundColor: '#0f172a',
+                backgroundColor: 'var(--bg-primary)',
                 borderRadius: '0.5rem',
-                border: '1px solid #334155'
+                border: '1px solid var(--border-color)'
               }}>
                 {models.map((model) => (
                   <label 
@@ -213,7 +212,7 @@ const PromptManager: React.FC = () => {
                       borderRadius: '0.375rem',
                       transition: 'background-color 200ms'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#1e293b'}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <input
@@ -229,22 +228,22 @@ const PromptManager: React.FC = () => {
                       }}
                       style={{ cursor: 'pointer' }}
                     />
-                    <span style={{ color: '#e2e8f0', fontSize: '0.875rem' }}>{model.name}</span>
+                    <span style={{ color: 'var(--text-primary)', fontSize: '0.875rem' }}>{model.name}</span>
                   </label>
                 ))}
               </div>
             </div>
             <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                 Quality Rating (optional)
               </label>
               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                 {[1, 2, 3, 4, 5].map((rating) => {
                   const getColor = () => {
-                    if (!formData.quality_rating || formData.quality_rating < rating) return '#64748b';
-                    if (formData.quality_rating <= 2) return '#ef4444'; // Red for 1-2
-                    if (formData.quality_rating === 3) return '#60a5fa'; // Blue for 3
-                    return '#22c55e'; // Green for 4-5
+                    if (!formData.quality_rating || formData.quality_rating < rating) return 'var(--text-tertiary)';
+                    if (formData.quality_rating <= 2) return 'var(--danger-text)'; // Red for 1-2
+                    if (formData.quality_rating === 3) return 'var(--accent-secondary)'; // Blue for 3
+                    return 'var(--success-text)'; // Green for 4-5
                   };
                   
                   const getGlow = () => {
@@ -262,8 +261,8 @@ const PromptManager: React.FC = () => {
                       style={{
                         padding: '0.5rem',
                         backgroundColor: formData.quality_rating && formData.quality_rating >= rating ? 
-                          (formData.quality_rating <= 2 ? '#7f1d1d' : formData.quality_rating === 3 ? '#1e3a8a' : '#14532d') : '#1e293b',
-                        border: '1px solid #334155',
+                          (formData.quality_rating <= 2 ? 'var(--danger-bg)' : formData.quality_rating === 3 ? 'var(--accent-glow)' : 'var(--success-bg)') : 'var(--bg-secondary)',
+                        border: '1px solid var(--border-color)',
                         borderRadius: '0.5rem',
                         cursor: 'pointer',
                         transition: 'all 200ms',
@@ -274,12 +273,12 @@ const PromptManager: React.FC = () => {
                       }}
                       onMouseEnter={(e) => {
                         if (!formData.quality_rating || formData.quality_rating < rating) {
-                          e.currentTarget.style.backgroundColor = '#334155';
+                          e.currentTarget.style.backgroundColor = 'var(--hover-bg)';
                         }
                       }}
                       onMouseLeave={(e) => {
                         const bgColor = formData.quality_rating && formData.quality_rating >= rating ? 
-                          (formData.quality_rating <= 2 ? '#7f1d1d' : formData.quality_rating === 3 ? '#1e3a8a' : '#14532d') : '#1e293b';
+                          (formData.quality_rating <= 2 ? 'var(--danger-bg)' : formData.quality_rating === 3 ? 'var(--accent-glow)' : 'var(--success-bg)') : 'var(--bg-secondary)';
                         e.currentTarget.style.backgroundColor = bgColor;
                       }}
                     >
@@ -295,9 +294,9 @@ const PromptManager: React.FC = () => {
                       marginLeft: '0.5rem',
                       padding: '0.25rem 0.75rem',
                       fontSize: '0.875rem',
-                      color: '#94a3b8',
+                      color: 'var(--text-secondary)',
                       backgroundColor: 'transparent',
-                      border: '1px solid #334155',
+                      border: '1px solid var(--border-color)',
                       borderRadius: '0.375rem',
                       cursor: 'pointer'
                     }}
@@ -308,7 +307,7 @@ const PromptManager: React.FC = () => {
               </div>
             </div>
             <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                 Experience Comment (optional)
               </label>
               <textarea
@@ -328,15 +327,13 @@ const PromptManager: React.FC = () => {
                   setEditingId(null);
                   setFormData({ prompt: '', tags: '', modelIds: [], quality_rating: null, comment: '' });
                 }}
-                className="close-btn"
-                style={{ padding: '0.5rem 1rem', backgroundColor: '#334155', borderRadius: '0.5rem' }}
+                className="close-btn btn-secondary"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="close-btn"
-                style={{ padding: '0.5rem 1rem', backgroundColor: '#2563eb', borderRadius: '0.5rem', color: 'white' }}
+                className="close-btn btn-primary-action"
               >
                 {editingId ? 'Update' : 'Create'}
               </button>
@@ -356,15 +353,15 @@ const PromptManager: React.FC = () => {
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                 Prompt
               </label>
               <div style={{
-                backgroundColor: '#1e293b',
-                border: '1px solid #334155',
+                backgroundColor: 'var(--bg-secondary)',
+                border: '1px solid var(--border-color)',
                 borderRadius: '0.75rem',
                 padding: '1rem 1.5rem',
-                color: '#e2e8f0',
+                color: 'var(--text-primary)',
                 fontSize: '1em',
                 whiteSpace: 'pre-wrap',
                 maxHeight: '20rem',
@@ -376,7 +373,7 @@ const PromptManager: React.FC = () => {
 
             {viewingPrompt.tags && (
               <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                   Tags
                 </label>
                 <div className="tag-container">
@@ -391,12 +388,12 @@ const PromptManager: React.FC = () => {
 
             {viewingPrompt.model_names && viewingPrompt.model_names.length > 0 && (
               <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                   Associated Models
                 </label>
                 <div className="tag-container">
                   {viewingPrompt.model_names.map((modelName, i) => (
-                    <span key={i} className="tag" style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa' }}>
+                    <span key={i} className="tag" style={{ backgroundColor: 'var(--accent-glow)', color: 'var(--accent-secondary)' }}>
                       {modelName}
                     </span>
                   ))}
@@ -406,17 +403,17 @@ const PromptManager: React.FC = () => {
 
             {viewingPrompt.quality_rating && (
               <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                   Quality Rating
                 </label>
                 <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }}>
                   {Array.from({ length: 5 }, (_, i) => {
                     const isActive = i < viewingPrompt.quality_rating!;
                     const getColor = () => {
-                      if (!isActive) return '#334155';
-                      if (viewingPrompt.quality_rating! <= 2) return '#ef4444'; // Red
-                      if (viewingPrompt.quality_rating! === 3) return '#60a5fa'; // Blue
-                      return '#22c55e'; // Green
+                      if (!isActive) return 'var(--text-tertiary)';
+                      if (viewingPrompt.quality_rating! <= 2) return 'var(--danger-text)'; // Red
+                      if (viewingPrompt.quality_rating! === 3) return 'var(--accent-secondary)'; // Blue
+                      return 'var(--success-text)'; // Green
                     };
                     
                     const getGlow = () => {
@@ -442,15 +439,15 @@ const PromptManager: React.FC = () => {
 
             {viewingPrompt.comment && (
               <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                   Experience Comment
                 </label>
                 <div style={{
-                  backgroundColor: '#1e293b',
-                  border: '1px solid #334155',
+                  backgroundColor: 'var(--bg-secondary)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: '0.75rem',
                   padding: '1rem 1.5rem',
-                  color: '#e2e8f0',
+                  color: 'var(--text-primary)',
                   fontSize: '0.9375rem',
                   whiteSpace: 'pre-wrap'
                 }}>
@@ -462,16 +459,15 @@ const PromptManager: React.FC = () => {
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => handleCopy(viewingPrompt)}
-                className="close-btn"
-                style={{ padding: '0.5rem 1rem', backgroundColor: '#2563eb', borderRadius: '0.5rem', color: 'white', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                className="close-btn btn-primary-action"
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
               >
                 {copiedId === viewingPrompt.ID ? <Check size={18} /> : <Copy size={18} />}
                 {copiedId === viewingPrompt.ID ? 'Copied!' : 'Copy to Clipboard'}
               </button>
               <button
                 onClick={() => setViewingPrompt(null)}
-                className="close-btn"
-                style={{ padding: '0.5rem 1rem', backgroundColor: '#334155', borderRadius: '0.5rem' }}
+                className="close-btn btn-secondary"
               >
                 Close
               </button>
@@ -528,7 +524,7 @@ const PromptManager: React.FC = () => {
                     <div className="tag-container">
                       {prompt.model_names && prompt.model_names.length > 0 ? (
                         prompt.model_names.map((modelName, i) => (
-                          <span key={i} className="tag" style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa' }}>
+                          <span key={i} className="tag" style={{ backgroundColor: 'var(--accent-glow)', color: 'var(--accent-secondary)' }}>
                             {modelName}
                           </span>
                         ))
@@ -543,10 +539,10 @@ const PromptManager: React.FC = () => {
                         Array.from({ length: 5 }, (_, i) => {
                           const isActive = i < prompt.quality_rating!;
                           const getColor = () => {
-                            if (!isActive) return '#334155';
-                            if (prompt.quality_rating! <= 2) return '#ef4444'; // Red
-                            if (prompt.quality_rating! === 3) return '#60a5fa'; // Blue
-                            return '#22c55e'; // Green
+                            if (!isActive) return 'var(--text-tertiary)';
+                            if (prompt.quality_rating! <= 2) return 'var(--danger-text)'; // Red
+                            if (prompt.quality_rating! === 3) return 'var(--accent-secondary)'; // Blue
+                            return 'var(--success-text)'; // Green
                           };
                           
                           const getGlow = () => {
@@ -567,13 +563,13 @@ const PromptManager: React.FC = () => {
                           );
                         })
                       ) : (
-                        <span style={{ color: '#64748b', fontSize: '0.875rem' }}>-</span>
+                        <span style={{ color: 'var(--text-tertiary)', fontSize: '0.875rem' }}>-</span>
                       )}
                     </div>
                   </td>
                   <td>
                     <div className="cell-date">
-                      <span className="text-slate-300">
+                      <span className="text-slate-300" style={{ color: 'var(--text-primary)' }}>
                         {new Date(prompt.created_at * 1000).toLocaleDateString('en-GB', {
                           day: 'numeric', month: 'short', year: 'numeric'
                         })}

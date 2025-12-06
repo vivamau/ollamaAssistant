@@ -115,7 +115,7 @@ const CreateModelModal: React.FC<CreateModelModalProps> = ({ documentId, onClose
 
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Base Model
             </label>
             <div className="model-dropdown-container">
@@ -143,7 +143,7 @@ const CreateModelModal: React.FC<CreateModelModalProps> = ({ documentId, onClose
                       }}
                       className={`model-dropdown-item ${baseModel === model.name ? 'active' : ''}`}
                     >
-                      <span style={{ color: '#f8fafc' }}>{model.name}</span>
+                      <span style={{ color: 'var(--text-primary)' }}>{model.name}</span>
                     </button>
                   ))}
                 </div>
@@ -152,7 +152,7 @@ const CreateModelModal: React.FC<CreateModelModalProps> = ({ documentId, onClose
           </div>
 
           <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               New Model Name
             </label>
             <input
@@ -169,16 +169,16 @@ const CreateModelModal: React.FC<CreateModelModalProps> = ({ documentId, onClose
 
           {logs.length > 0 && (
             <div style={{ 
-              backgroundColor: '#0a0f1a', 
+              backgroundColor: 'var(--bg-primary)', 
               borderRadius: '0.75rem', 
               padding: '0.875rem', 
               maxHeight: '10rem', 
               overflowY: 'auto',
               marginBottom: '1.5rem',
-              border: '1px solid #1e293b',
+              border: '1px solid var(--border-color)',
               fontFamily: 'monospace',
               fontSize: '0.75rem',
-              color: '#94a3b8'
+              color: 'var(--text-secondary)'
             }}>
               {logs.map((log, i) => (
                 <div key={i} style={{ marginBottom: '0.25rem' }}>{log}</div>
@@ -194,15 +194,15 @@ const CreateModelModal: React.FC<CreateModelModalProps> = ({ documentId, onClose
                 gap: '0.5rem',
                 padding: '0.875rem',
                 borderRadius: '0.5rem',
-                backgroundColor: status.type === 'success' ? 'rgba(34, 197, 94, 0.1)' :
-                               status.type === 'error' ? 'rgba(239, 68, 68, 0.1)' :
-                               'rgba(59, 130, 246, 0.1)',
-                color: status.type === 'success' ? '#4ade80' :
-                       status.type === 'error' ? '#f87171' :
-                       '#60a5fa',
-                border: `1px solid ${status.type === 'success' ? 'rgba(34, 197, 94, 0.2)' :
-                                     status.type === 'error' ? 'rgba(239, 68, 68, 0.2)' :
-                                     'rgba(59, 130, 246, 0.2)'}`,
+                backgroundColor: status.type === 'success' ? 'var(--success-bg)' :
+                               status.type === 'error' ? 'var(--danger-bg)' :
+                               'var(--accent-glow)',
+                color: status.type === 'success' ? 'var(--success-text)' :
+                       status.type === 'error' ? 'var(--danger-text)' :
+                       'var(--accent-secondary)',
+                border: `1px solid ${status.type === 'success' ? 'var(--success-text)' :
+                                     status.type === 'error' ? 'var(--danger-text)' :
+                                     'var(--accent-primary)'}`,
                 marginBottom: '1.5rem',
                 fontSize: '0.875rem',
                 fontWeight: '500'
@@ -222,7 +222,7 @@ const CreateModelModal: React.FC<CreateModelModalProps> = ({ documentId, onClose
               className="close-btn"
               style={{ 
                 padding: '0.5rem 1rem', 
-                backgroundColor: loading || !baseModel || !newModelName ? '#334155' : '#2563eb', 
+                backgroundColor: loading || !baseModel || !newModelName ? 'var(--bg-tertiary)' : 'var(--accent-primary)', 
                 borderRadius: '0.5rem', 
                 color: 'white',
                 opacity: loading || !baseModel || !newModelName ? 0.5 : 1,
@@ -246,7 +246,7 @@ const CreateModelModal: React.FC<CreateModelModalProps> = ({ documentId, onClose
                 type="button"
                 onClick={onClose}
                 className="close-btn"
-                style={{ padding: '0.5rem 1rem', backgroundColor: '#334155', borderRadius: '0.5rem', marginLeft: '0.75rem' }}
+                style={{ padding: '0.5rem 1rem', backgroundColor: 'var(--bg-tertiary)', borderRadius: '0.5rem', marginLeft: '0.75rem' }}
               >
                 Cancel
               </button>
