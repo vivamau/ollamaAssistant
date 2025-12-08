@@ -7,6 +7,41 @@ A full-stack application to train (customize) Ollama models with your own docume
 - [Node.js](https://nodejs.org/) (v16 or higher)
 - [Ollama](https://ollama.com/) installed and running locally
 
+## ⚙️ Configuration
+
+### Environment Variables
+The backend supports the following optional environment variables. Create a `.env` file in the `backend` directory if you need to customize these settings:
+
+```bash
+# Server Configuration
+PORT=3000                    # Backend server port (default: 3000)
+
+# Redis Configuration (Optional - for caching)
+REDIS_HOST=localhost         # Redis server host
+REDIS_PORT=6379             # Redis server port
+REDIS_PASSWORD=             # Redis password (if required)
+REDIS_DB=0                  # Redis database number
+REDIS_CONNECT_TIMEOUT=10000 # Connection timeout in ms
+REDIS_COMMAND_TIMEOUT=5000  # Command timeout in ms
+```
+
+**Note**: Redis is optional. The application will work without it, but enabling Redis provides caching for improved performance.
+
+### Database
+The application uses **SQLite** for data storage. The database file is automatically created at:
+```
+backend/data/ollamaAssistant.db
+```
+
+**Database Tables**:
+- `Models` - Stores information about Ollama models
+- `Chats` - Stores chat history and sessions
+- `Documents` - Tracks uploaded documents (PDFs, TXT, DOCX)
+- `Prompts` - Stores saved prompts with ratings and comments
+- `PromptModels` - Links prompts to specific models
+
+**Migrations**: Database migrations run automatically when the backend starts. No manual setup required!
+
 ## 🛠️ Installation & Setup
 
 ### 1. Start Ollama
