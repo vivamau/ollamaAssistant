@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Database, Loader2 } from 'lucide-react';
+import { FileText, Database, Loader2, Trash2, AlertCircle } from 'lucide-react';
 import CreateModelModal from './CreateModelModal';
 
 interface Document {
@@ -14,6 +14,8 @@ const DocumentList: React.FC = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDocId, setSelectedDocId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{ show: boolean; docId: number | null }>({ show: false, docId: null });
 
   const fetchDocuments = async () => {
     try {
@@ -26,6 +28,33 @@ const DocumentList: React.FC = () => {
       console.error('Error fetching documents:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteClick = (id: number) => {
+    setConfirmDelete({ show: true, docId: id });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmDelete.docId) return;
+    
+    setDeletingId(confirmDelete.docId);
+    setConfirmDelete({ show: false, docId: null });
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/documents/${confirmDelete.docId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        await fetchDocuments();
+      } else {
+        console.error('Failed to delete document');
+      }
+    } catch (error) {
+      console.error('Error deleting document:', error);
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -91,15 +120,29 @@ const DocumentList: React.FC = () => {
                     </div>
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    <button
-                      onClick={() => setSelectedDocId(doc.ID)}
-                      className="context-toggle"
-                      title="Train model with this document"
-                      style={{ whiteSpace: 'nowrap', minWidth: '120px' }}
-                    >
-                      <Database size={16} />
-                      Train Model
-                    </button>
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => setSelectedDocId(doc.ID)}
+                        className="context-toggle"
+                        title="Train model with this document"
+                        style={{ whiteSpace: 'nowrap' }}
+                      >
+                        <Database size={16} />
+                        Train Model
+                      </button>
+                      <button
+                        onClick={() => handleDeleteClick(doc.ID)}
+                        className="table-action-btn table-action-danger"
+                        title="Delete document"
+                        disabled={deletingId === doc.ID}
+                      >
+                        {deletingId === doc.ID ? (
+                          <Loader2 size={16} className="animate-spin" />
+                        ) : (
+                          <Trash2 size={16} />
+                        )}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -117,6 +160,41 @@ const DocumentList: React.FC = () => {
             // Optional: show success message
           }}
         />
+      )}
+
+      {confirmDelete.show && (
+        <div className="modal-overlay" onClick={() => setConfirmDelete({ show: false, docId: null })}>
+          <div className="modal-content" style={{ maxWidth: '28rem' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="text-xl font-bold text-slate-200 flex items-center gap-2">
+                <AlertCircle className="text-red-500" />
+                Delete Document
+              </h2>
+            </div>
+            <div className="mb-6">
+              <p className="text-slate-300 mb-2">
+                Are you sure you want to delete this document?
+              </p>
+              <p className="text-slate-400 text-sm">
+                This will remove the file from the system and the database. This action cannot be undone.
+              </p>
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setConfirmDelete({ show: false, docId: null })}
+                className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 hover:text-red-400 border border-red-500/20 transition-colors"
+              >
+                Delete Forever
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

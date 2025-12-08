@@ -160,5 +160,22 @@ export const migrations: Migration[] = [
         ALTER TABLE Models ADD COLUMN last_used_at INTEGER;
       `);
     }
+  },
+  {
+    id: 11,
+    name: 'create_websites_table',
+    up: async (db: sqlite3.Database) => {
+      await runSQL(db, `
+        CREATE TABLE IF NOT EXISTS Websites (
+          ID INTEGER PRIMARY KEY AUTOINCREMENT,
+          url TEXT NOT NULL UNIQUE,
+          title TEXT,
+          content TEXT,
+          scraped_at INTEGER NOT NULL,
+          last_updated INTEGER,
+          status TEXT DEFAULT 'active'
+        )
+      `);
+    }
   }
 ];

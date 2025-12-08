@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { Globe, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import './Components.css';
 
-const WebsiteInput: React.FC = () => {
+interface WebsiteInputProps {
+  onWebsiteAdded?: () => void;
+}
+
+const WebsiteInput: React.FC<WebsiteInputProps> = ({ onWebsiteAdded }) => {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -25,6 +29,9 @@ const WebsiteInput: React.FC = () => {
 
       setStatus({ type: 'success', message: 'Website content scraped successfully' });
       setUrl('');
+      if (onWebsiteAdded) {
+        onWebsiteAdded();
+      }
     } catch (error) {
       setStatus({ type: 'error', message: 'Failed to scrape website. Please check the URL.' });
     } finally {

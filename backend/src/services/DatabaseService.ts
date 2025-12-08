@@ -341,6 +341,80 @@ export class DatabaseService {
     });
   }
 
+  async deleteDocument(id: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.db.run('DELETE FROM Documents WHERE ID = ?', [id], (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+  }
+
+  // Websites methods
+  async addWebsite(website: { url: string; title?: string; content: string }): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const now = Math.floor(Date.now() / 1000);
+      this.db.run(
+        'INSERT INTO Websites (url, title, content, scraped_at, last_updated) VALUES (?, ?, ?, ?, ?)',
+        [website.url, website.title || null, website.content, now, now],
+        function (err) {
+          if (err) reject(err);
+          else resolve(this.lastID);
+        }
+      );
+    });
+  }
+
+  async getWebsites(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.db.all('SELECT * FROM Websites ORDER BY scraped_at DESC', (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      });
+    });
+  }
+
+  async getWebsite(id: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.db.get('SELECT * FROM Websites WHERE ID = ?', [id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+  }
+
+  async deleteModel(name: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.db.run('DELETE FROM Models WHERE model_original_name = ?', [name], (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+  }
+
+  async updateWebsite(id: number, content: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const now = Math.floor(Date.now() / 1000);
+      this.db.run(
+        'UPDATE Websites SET content = ?, last_updated = ? WHERE ID = ?',
+        [content, now, id],
+        (err) => {
+          if (err) reject(err);
+          else resolve();
+        }
+      );
+    });
+  }
+
+  async deleteWebsite(id: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.db.run('DELETE FROM Websites WHERE ID = ?', [id], (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+  }
+
   close(): void {
     this.db.close((err) => {
       if (err) {

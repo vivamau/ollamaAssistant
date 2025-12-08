@@ -65,4 +65,32 @@ router.post('/upload', upload.single('file'), async (req, res) => {
   }
 });
 
+router.delete('/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const document = await databaseService.getDocument(id);
+    
+    if (!document) {
+      return res.status(404).json({ error: 'Document not found' });
+    }
+
+    // Delete file from filesystem
+    if (document.path && fs.existsSync(document.path)) {
+      try {
+        fs.unlinkSync(document.path);
+        console.log(`Deleted file: ${document.path}`);
+      } catch (err) {
+        console.error(`Error deleting file ${document.path}:`, err);
+        // Continue to delete from DB
+      }
+    }
+
+    await databaseService.deleteDocument(id);
+    res.json({ message: 'Document deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    res.status(500).json({ error: 'Failed to delete document' });
+  }
+});
+
 export default router;

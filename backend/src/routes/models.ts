@@ -53,48 +53,74 @@ router.post('/pull', async (req, res) => {
 
 router.post('/create', async (req, res) => {
   try {
-    const { documentId, baseModel, newModelName } = req.body;
+    // Default sourceType to 'document' for backward compatibility
+    const { documentId, baseModel, newModelName, sourceType = 'document' } = req.body;
 
     if (!documentId || !baseModel || !newModelName) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Get document from database
-    const document = await databaseService.getDocument(documentId);
-    if (!document) {
-      return res.status(404).json({ error: 'Document not found' });
+    let content: string;
+    let sourceName: string;
+
+    if (sourceType === 'website') {
+      // Handle website
+      const website = await databaseService.getWebsite(documentId);
+      
+      if (!website) {
+        return res.status(404).json({ error: 'Website not found' });
+      }
+      
+      content = website.content;
+      sourceName = website.url;
+    } else {
+      // Handle document (default)
+      const document = await databaseService.getDocument(documentId);
+      
+      if (!document) {
+        return res.status(404).json({ error: 'Document not found' });
+      }
+
+      content = await documentProcessor.processFile(document.path, document.mime_type);
+      sourceName = document.original_name;
     }
 
-    // Process document content
-    const content = await documentProcessor.processFile(document.path, document.mime_type);
+    console.log(`Creating model '${newModelName}' from ${sourceType} '${sourceName}' based on '${baseModel}'`);
 
-    // Create Modelfile
-    const modelfile = `FROM ${baseModel}
-SYSTEM """
-You are a helpful assistant trained on the following document: ${document.original_name}.
+    // Create system prompt
+    const systemPrompt = `You are a helpful assistant trained on the following content: ${sourceName}.
 Use this content to answer questions:
 
-${content}
-"""`;
+${content}`;
 
-    // Create model
-    const stream = await ollamaService.createModel(newModelName, modelfile);
+    console.log('System prompt length:', systemPrompt.length);
+
+    // Create model using explicit parameters
+    const stream = await ollamaService.createModel(newModelName, baseModel, systemPrompt);
 
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
 
     for await (const part of stream) {
+      if (part.status) console.log('Ollama status:', part.status);
       res.write(`data: ${JSON.stringify(part)}\n\n`);
     }
     
     // Sync models after creation
+    console.log('Syncing models...');
     await databaseService.syncModels();
     
+    console.log('Model creation completed successfully');
     res.end();
   } catch (error) {
     console.error('Error creating model:', error);
-    res.status(500).json({ error: 'Failed to create model' });
+    // @ts-ignore
+    if (error.cause) console.error('Error cause:', error.cause);
+    // @ts-ignore
+    if (error.response) console.error('Error response:', error.response);
+    
+    res.status(500).json({ error: 'Failed to create model', details: String(error) });
   }
 });
 

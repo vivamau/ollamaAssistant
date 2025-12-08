@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useRef } from 'react';
 import Sidebar from './components/Sidebar';
@@ -6,6 +7,7 @@ import ChatInterface from './components/ChatInterface';
 import DocumentUploader from './components/DocumentUploader';
 import DocumentList from './components/DocumentList';
 import WebsiteInput from './components/WebsiteInput';
+import WebsiteList from './components/WebsiteList';
 import ModelSelector from './components/ModelSelector';
 import PromptManager from './components/PromptManager';
 import Settings from './components/Settings';
@@ -20,12 +22,21 @@ const DocumentsPage = () => (
   </div>
 );
 
-const WebsitesPage = () => (
-  <div className="page-container">
-    <h2 className="page-title">Websites</h2>
-    <WebsiteInput />
-  </div>
-);
+const WebsitesPage = () => {
+  const [refreshKey, setRefreshKey] = React.useState(0);
+  
+  const handleWebsiteAdded = () => {
+    setRefreshKey(prev => prev + 1);
+  };
+
+  return (
+    <div className="page-container">
+      <h2 className="page-title">Websites</h2>
+      <WebsiteInput onWebsiteAdded={handleWebsiteAdded} />
+      <WebsiteList key={refreshKey} />
+    </div>
+  );
+};
 
 const ModelsPage = () => (
   <div className="page-container">

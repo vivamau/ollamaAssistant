@@ -3,6 +3,7 @@ import { X, Bot, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface CreateModelModalProps {
   documentId: number;
+  sourceType?: 'document' | 'website';
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -11,7 +12,7 @@ interface Model {
   name: string;
 }
 
-const CreateModelModal: React.FC<CreateModelModalProps> = ({ documentId, onClose, onSuccess }) => {
+const CreateModelModal: React.FC<CreateModelModalProps> = ({ documentId, sourceType = 'document', onClose, onSuccess }) => {
   const [baseModel, setBaseModel] = useState('');
   const [newModelName, setNewModelName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -53,6 +54,7 @@ const CreateModelModal: React.FC<CreateModelModalProps> = ({ documentId, onClose
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           documentId,
+          sourceType,
           baseModel,
           newModelName
         })
