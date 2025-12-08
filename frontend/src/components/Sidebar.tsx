@@ -1,12 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MessageSquare, FileText, Globe, Database, Sparkles, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
-import logo from '../assets/logo.png';
+import logoDark from '../assets/logo-dark.png';
+import logoLight from '../assets/logo-light.png';
 import './Sidebar.css';
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  // Detect theme changes
+  useEffect(() => {
+    const updateTheme = () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') as 'dark' | 'light';
+      setTheme(currentTheme || 'dark');
+    };
+
+    // Initial theme detection
+    updateTheme();
+
+    // Watch for theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+          updateTheme();
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   // Auto-collapse on smaller screens, auto-expand on larger screens
   useEffect(() => {
@@ -35,7 +64,11 @@ const Sidebar: React.FC = () => {
     <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
         <div className="logo-container">
-          <img src={logo} alt="Ollama Logo" className="app-logo" />
+          <img 
+            src={theme === 'dark' ? logoDark : logoLight} 
+            alt="Ollama Logo" 
+            className="app-logo" 
+          />
         </div>
       </div>
 

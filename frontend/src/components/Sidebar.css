@@ -145,3 +145,14 @@
   background-color: #f1f5f9;
   color: #0f172a;
 }
+
+/* Theme-specific logo sizing */
+[data-theme="light"] .logo-container {
+  width: 8rem;
+  height: 8rem;
+}
+
+[data-theme="light"] .sidebar.collapsed .logo-container {
+  width: 4rem;
+  height: 4rem;
+}
