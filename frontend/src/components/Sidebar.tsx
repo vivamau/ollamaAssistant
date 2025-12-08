@@ -5,7 +5,11 @@ import logoDark from '../assets/logo-dark.png';
 import logoLight from '../assets/logo-light.png';
 import './Sidebar.css';
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  onNavigationAttempt?: (path: string) => boolean;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ onNavigationAttempt }) => {
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -87,6 +91,11 @@ const Sidebar: React.FC = () => {
             to={item.path}
             className={`nav-item ${location.pathname === item.path ? 'active' : 'inactive'}`}
             title={isCollapsed ? item.label : undefined}
+            onClick={(e) => {
+              if (onNavigationAttempt && !onNavigationAttempt(item.path)) {
+                e.preventDefault();
+              }
+            }}
           >
             <item.icon size={isCollapsed ? 48 : 24} />
             {!isCollapsed && <span className="font-medium">{item.label}</span>}
@@ -99,6 +108,11 @@ const Sidebar: React.FC = () => {
           to="/settings"
           className={`nav-item ${location.pathname === '/settings' ? 'active' : 'inactive'}`}
           title={isCollapsed ? 'Settings' : undefined}
+          onClick={(e) => {
+            if (onNavigationAttempt && !onNavigationAttempt('/settings')) {
+              e.preventDefault();
+            }
+          }}
         >
           <Settings size={isCollapsed ? 48 : 24} />
           {!isCollapsed && <span className="font-medium">Settings</span>}

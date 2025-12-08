@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, FileText, Settings, Loader2, ChevronDown, Info, Download, Save, MessageSquarePlus, StopCircle, List } from 'lucide-react';
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { Send, Bot, User, FileText, Settings, Loader2, ChevronDown, Info, Download, Save, MessageSquarePlus, StopCircle, List, ThumbsUp, Bookmark } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import ModelSelector from './ModelSelector';
 import ChatHistoryModal from './ChatHistoryModal';
@@ -12,7 +12,12 @@ interface Message {
   model?: string;
 }
 
-const ChatInterface: React.FC = () => {
+interface ChatInterfaceProps {
+  onNavigationConfirmed?: () => void;
+}
+
+const ChatInterface = forwardRef<any, ChatInterfaceProps>((props, ref) => {
+  const { onNavigationConfirmed } = props;
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,11 +29,22 @@ const ChatInterface: React.FC = () => {
   const [chatStartTime, setChatStartTime] = useState<Date | null>(null);
   const [modelsUsedInChat, setModelsUsedInChat] = useState<Set<string>>(new Set());
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [showNavigationPrompt, setShowNavigationPrompt] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [savedChats, setSavedChats] = useState<any[]>([]);
+  const [hasUnsaved, setHasUnsaved] = useState(false);
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+  const [savePromptDialog, setSavePromptDialog] = useState<{ show: boolean; promptText: string; model: string } | null>(null);
+  const [qualityRating, setQualityRating] = useState<number | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Expose methods to parent via ref
+  useImperativeHandle(ref, () => ({
+    hasUnsavedChanges: () => hasUnsaved && messages.length > 0,
+    showNavigationPrompt: () => setShowNavigationPrompt(true)
+  }));
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -86,6 +102,7 @@ const ChatInterface: React.FC = () => {
       model: selectedModel
     };
     setMessages(prev => [...prev, userMessage]);
+    setHasUnsaved(true); // Mark as unsaved
     setInput('');
     setLoading(true);
 
@@ -218,6 +235,7 @@ const ChatInterface: React.FC = () => {
     setChatStartTime(null);
     setModelsUsedInChat(new Set());
     setShowSaveDialog(false);
+    setHasUnsaved(false); // Clear unsaved flag
   };
 
   const handleSaveChat = async (clearAfterSave: boolean = false) => {
@@ -255,7 +273,9 @@ const ChatInterface: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        alert(`Chat saved successfully to: ${data.path}${data.chatId ? ` (ID: ${data.chatId})` : ''}`);
+        setHasUnsaved(false); // Clear unsaved flag after save
+        setShowSuccessAnimation(true);
+        setTimeout(() => setShowSuccessAnimation(false), 3000); // Hide after 3 seconds
         if (clearAfterSave) {
           handleClearChat();
         }
@@ -351,6 +371,40 @@ const ChatInterface: React.FC = () => {
     const month = date.toLocaleString('en-GB', { month: 'short' });
     const year = date.getFullYear();
     return `${day} ${month} ${year} ${formatTime(date)}`;
+  };
+
+  const handleSavePromptClick = (promptText: string, model: string) => {
+    setSavePromptDialog({ show: true, promptText, model });
+    setQualityRating(null); // Reset rating when opening dialog
+  };
+
+  const handleSavePrompt = async (tags: string, qualityRating: number | null, comment: string) => {
+    if (!savePromptDialog) return;
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prompts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: savePromptDialog.promptText,
+          tags,
+          modelIds: [], // We'll use model names instead
+          quality_rating: qualityRating,
+          comment
+        })
+      });
+
+      if (response.ok) {
+        setShowSuccessAnimation(true);
+        setTimeout(() => setShowSuccessAnimation(false), 3000);
+        setSavePromptDialog(null);
+      } else {
+        alert('Failed to save prompt');
+      }
+    } catch (error) {
+      console.error('Error saving prompt:', error);
+      alert('Failed to save prompt');
+    }
   };
 
   if (!selectedModel) {
@@ -498,6 +552,55 @@ const ChatInterface: React.FC = () => {
         </div>
       )}
 
+      {showNavigationPrompt && (
+        <div className="modal-overlay" onClick={() => setShowNavigationPrompt(false)}>
+          <div className="modal-content" style={{ maxWidth: '28rem' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>Save Chat Before Leaving?</h2>
+            </div>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <p style={{ color: 'var(--text-primary)', marginBottom: '1rem' }}>
+                You have unsaved changes in your chat.
+              </p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+                Would you like to save your conversation before navigating away?
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setShowNavigationPrompt(false)}
+                className="btn-secondary"
+                style={{ padding: '0.625rem 1.25rem', border: 'none' }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  setShowNavigationPrompt(false);
+                  setHasUnsaved(false);
+                  onNavigationConfirmed?.();
+                }}
+                className="btn-danger"
+                style={{ padding: '0.625rem 1.25rem', border: 'none' }}
+              >
+                Discard
+              </button>
+              <button
+                onClick={async () => {
+                  await handleSaveChat(false);
+                  setShowNavigationPrompt(false);
+                  onNavigationConfirmed?.();
+                }}
+                className="btn-primary"
+                style={{ padding: '0.625rem 1.25rem', border: 'none' }}
+              >
+                Save & Leave
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showHistory && (
         <ChatHistoryModal
           chats={savedChats}
@@ -551,6 +654,15 @@ const ChatInterface: React.FC = () => {
             )}
             
             <div className={`message-bubble ${msg.role === 'user' ? 'user' : 'assistant'}`}>
+              {msg.role === 'user' && (
+                <button
+                  onClick={() => handleSavePromptClick(msg.content, msg.model || selectedModel)}
+                  className="save-prompt-btn"
+                  title="Save as prompt"
+                >
+                  <Bookmark size={14} />
+                </button>
+              )}
               {msg.content === '...' ? (
                 <div className="flex items-center gap-2 text-slate-400">
                   <Loader2 size={16} className="animate-spin" />
@@ -612,8 +724,165 @@ const ChatInterface: React.FC = () => {
           </button>
         </form>
       </div>
+
+      {/* Success Animation */}
+      {showSuccessAnimation && (
+        <div style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 9999,
+          animation: 'successPop 3s ease-out forwards'
+        }}>
+          <ThumbsUp 
+            size={120} 
+            style={{ 
+              color: '#10b981',
+              filter: 'drop-shadow(0 0 20px rgba(16, 185, 129, 0.5))'
+            }} 
+          />
+        </div>
+      )}
+
+      {/* Save Prompt Dialog */}
+      {savePromptDialog?.show && (
+        <div className="modal-overlay" onClick={() => setSavePromptDialog(null)}>
+          <div className="modal-content" style={{ maxWidth: '36rem' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>Save Prompt</h2>
+            </div>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              handleSavePrompt(
+                formData.get('tags') as string,
+                qualityRating,
+                formData.get('comment') as string
+              );
+            }}>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+                  Prompt
+                </label>
+                <div style={{ 
+                  padding: '0.75rem', 
+                  backgroundColor: 'var(--bg-secondary)', 
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '0.5rem',
+                  color: 'var(--text-secondary)',
+                  fontSize: '0.875rem',
+                  maxHeight: '10rem',
+                  overflowY: 'auto'
+                }}>
+                  {savePromptDialog.promptText}
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+                  Tags (optional)
+                </label>
+                <input
+                  type="text"
+                  name="tags"
+                  placeholder="e.g., coding, analysis, creative"
+                  className="input-field"
+                  style={{ width: '100%' }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+                  Quality Rating (optional)
+                </label>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  {[1, 2, 3, 4, 5].map((rating) => {
+                    const isSelected = qualityRating !== null && qualityRating >= rating;
+                    
+                    const getColor = () => {
+                      if (!isSelected) return 'var(--text-tertiary)';
+                      if (qualityRating! <= 2) return 'var(--danger-text)';
+                      if (qualityRating === 3) return 'var(--accent-secondary)';
+                      return 'var(--success-text)';
+                    };
+                    
+                    const getBgColor = () => {
+                      if (!isSelected) return 'var(--bg-secondary)';
+                      if (qualityRating! <= 2) return 'var(--danger-bg)';
+                      if (qualityRating === 3) return 'var(--accent-glow)';
+                      return 'var(--success-bg)';
+                    };
+                    
+                    const getGlow = () => {
+                      if (!isSelected) return 'none';
+                      if (qualityRating! <= 2) return '0 0 10px rgba(239, 68, 68, 0.5)';
+                      if (qualityRating === 3) return '0 0 10px rgba(96, 165, 250, 0.5)';
+                      return '0 0 10px rgba(34, 197, 94, 0.5)';
+                    };
+                    
+                    return (
+                      <button
+                        key={rating}
+                        type="button"
+                        onClick={() => setQualityRating(rating)}
+                        style={{
+                          padding: '0.5rem',
+                          backgroundColor: getBgColor(),
+                          border: '1px solid var(--border-color)',
+                          borderRadius: '0.5rem',
+                          cursor: 'pointer',
+                          transition: 'all 200ms',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          boxShadow: getGlow(),
+                          fontSize: '1.5rem'
+                        }}
+                      >
+                        <Bot size={20} style={{ color: isSelected ? getColor() : 'var(--text-tertiary)' }} />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+                  Comment (optional)
+                </label>
+                <textarea
+                  name="comment"
+                  placeholder="Add notes about this prompt..."
+                  className="input-field"
+                  rows={3}
+                  style={{ width: '100%', resize: 'vertical' }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+                <button
+                  type="button"
+                  onClick={() => setSavePromptDialog(null)}
+                  className="btn-secondary"
+                  style={{ padding: '0.625rem 1.25rem', border: 'none' }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  style={{ padding: '0.625rem 1.25rem', border: 'none' }}
+                >
+                  Save Prompt
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
+});
 
 export default ChatInterface;

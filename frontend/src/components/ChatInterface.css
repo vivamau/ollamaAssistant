@@ -49,6 +49,10 @@
   background-color: var(--hover-bg);
 }
 
+[data-theme="light"] .model-badge.clickable:hover {
+  background-color: #e0e7ff;
+}
+
 .model-dropdown {
   position: absolute;
   top: calc(100% + 0.5rem);
@@ -84,12 +88,16 @@
 }
 
 .model-dropdown-item:hover {
-  background-color: var(--hover-bg);
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+[data-theme="light"] .model-dropdown-item:hover {
+  background-color: #e0e7ff;
 }
 
 .model-dropdown-item.active {
   background-color: var(--accent-glow);
-  color: var(--accent-secondary);
+  color: var(--accent-primary);
 }
 
 /* Loading dots animation */
@@ -156,6 +164,11 @@
   color: var(--text-primary);
 }
 
+[data-theme="light"] .settings-btn:hover {
+  background-color: #e0e7ff;
+  color: #1e293b;
+}
+
 .messages-area {
   flex: 1;
   overflow-y: auto;
@@ -208,9 +221,10 @@
 }
 
 .message-bubble {
-  max-width: 80%;
+  padding: 0.75rem 1rem;
   border-radius: 1rem;
-  padding: 1rem 1.5rem;
+  max-width: 70%;
+  position: relative;
 }
 
 .message-bubble.user {
@@ -478,7 +492,12 @@
 }
 
 .history-row:hover, .data-row:hover {
-  background-color: var(--hover-bg);
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+[data-theme="light"] .history-row:hover,
+[data-theme="light"] .data-row:hover {
+  background-color: #e0e7ff;
 }
 
 .history-row:last-child td, .data-row:last-child td {
@@ -590,4 +609,59 @@
 .delete-btn:hover, .action-btn.danger:hover {
   background-color: var(--danger-bg);
   color: var(--danger-text);
+}
+
+@keyframes successPop {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+  35% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+.save-prompt-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.375rem;
+  padding: 0.375rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 200ms;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message-bubble.user:hover .save-prompt-btn {
+  opacity: 1;
+}
+
+.save-prompt-btn:hover {
+  background: var(--hover-bg);
+  color: var(--accent-primary);
+  transform: scale(1.1);
+}
+
+[data-theme="light"] .save-prompt-btn:hover {
+  background: #e0e7ff;
+  color: #4f46e5;
 }

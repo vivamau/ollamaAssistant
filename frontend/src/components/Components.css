@@ -39,6 +39,11 @@
   /* Removed: box-shadow: 0 0 25px var(--accent-glow); */
 }
 
+[data-theme="light"] .btn-primary,
+[data-theme="light"] .btn-primary:hover {
+  background: linear-gradient(135deg, #0ea5e9, #3b82f6) !important;
+}
+
 .btn-primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -156,6 +161,16 @@
 
 .action-btn:hover {
   background-color: var(--accent-secondary);
+}
+
+[data-theme="light"] .action-btn {
+  background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+  color: white;
+}
+
+[data-theme="light"] .action-btn:hover {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: white;
 }
 
 .action-btn:disabled {

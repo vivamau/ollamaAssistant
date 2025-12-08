@@ -263,6 +263,30 @@ export class DatabaseService {
     });
   }
 
+  async trackModelUsage(modelName: string, promptTokens: number = 0, completionTokens: number = 0): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const now = Math.floor(Date.now() / 1000);
+      this.db.run(
+        `UPDATE Models 
+         SET usage_count = COALESCE(usage_count, 0) + 1,
+             total_prompt_tokens = COALESCE(total_prompt_tokens, 0) + ?,
+             total_completion_tokens = COALESCE(total_completion_tokens, 0) + ?,
+             last_used_at = ?
+         WHERE model_original_name = ?`,
+        [promptTokens, completionTokens, now, modelName],
+        (err) => {
+          if (err) {
+            console.error('Error tracking model usage:', err);
+            reject(err);
+          } else {
+            console.log(`Tracked usage for model: ${modelName} (prompt: ${promptTokens}, completion: ${completionTokens})`);
+            resolve();
+          }
+        }
+      );
+    });
+  }
+
   async addDocument(doc: { filename: string; originalName: string; path: string; mimeType: string }): Promise<number> {
     return new Promise((resolve, reject) => {
       const { filename, originalName, path, mimeType } = doc;

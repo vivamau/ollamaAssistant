@@ -130,5 +130,35 @@ export const migrations: Migration[] = [
         ALTER TABLE Prompts ADD COLUMN comment TEXT;
       `);
     }
+  },
+  {
+    id: 8,
+    name: 'add_usage_count_to_models',
+    up: async (db: sqlite3.Database) => {
+      await runSQL(db, `
+        ALTER TABLE Models ADD COLUMN usage_count INTEGER DEFAULT 0;
+      `);
+    }
+  },
+  {
+    id: 9,
+    name: 'add_token_tracking_to_models',
+    up: async (db: sqlite3.Database) => {
+      await runSQL(db, `
+        ALTER TABLE Models ADD COLUMN total_prompt_tokens INTEGER DEFAULT 0;
+      `);
+      await runSQL(db, `
+        ALTER TABLE Models ADD COLUMN total_completion_tokens INTEGER DEFAULT 0;
+      `);
+    }
+  },
+  {
+    id: 10,
+    name: 'add_last_used_at_to_models',
+    up: async (db: sqlite3.Database) => {
+      await runSQL(db, `
+        ALTER TABLE Models ADD COLUMN last_used_at INTEGER;
+      `);
+    }
   }
 ];

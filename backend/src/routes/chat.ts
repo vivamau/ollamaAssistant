@@ -30,9 +30,22 @@ router.post('/', async (req, res) => {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
 
+    let lastPart: any = null;
     for await (const part of response) {
       res.write(`data: ${JSON.stringify(part)}\n\n`);
+      lastPart = part;
     }
+    
+    // Increment usage count and track tokens for the model
+    try {
+      const promptTokens = lastPart?.prompt_eval_count || 0;
+      const completionTokens = lastPart?.eval_count || 0;
+      await databaseService.trackModelUsage(model, promptTokens, completionTokens);
+    } catch (error) {
+      console.error('Error tracking model usage:', error);
+      // Don't fail the request if usage tracking fails
+    }
+    
     res.end();
   } catch (error) {
     console.error('Error in chat:', error);

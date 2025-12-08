@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, ArrowRight, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Globe, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import './Components.css';
 
 const WebsiteInput: React.FC = () => {
@@ -45,27 +45,28 @@ const WebsiteInput: React.FC = () => {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="input-form-wrapper">
+        <form onSubmit={handleSubmit} className="pull-form">
           <input
             type="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="https://example.com"
             className="input-field"
-            style={{ paddingRight: '8rem' }}
+            style={{ flex: 1 }}
             required
           />
           <button
             type="submit"
             disabled={loading}
-            className="action-btn"
+            className="btn-primary"
           >
             {loading ? (
-              <Loader2 size={16} className="animate-spin" />
-            ) : (
               <>
-                Scrape <ArrowRight size={16} />
+                <Loader2 size={16} className="animate-spin" />
+                Scraping...
               </>
+            ) : (
+              'Scrape'
             )}
           </button>
         </form>

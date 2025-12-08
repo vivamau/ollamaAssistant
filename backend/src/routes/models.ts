@@ -13,12 +13,16 @@ router.get('/', async (req, res) => {
     // Get fresh data from Ollama
     const ollamaResponse = await ollamaService.listModels();
     
-    // Merge database IDs with Ollama data
+    // Merge database IDs, usage_count, token counts, and last_used_at with Ollama data
     const modelsWithIds = ollamaResponse.models.map((ollamaModel: any) => {
       const dbModel = dbModels.find((m: any) => m.model_original_name === ollamaModel.name);
       return {
         ...ollamaModel,
-        ID: dbModel?.ID || null
+        ID: dbModel?.ID || null,
+        usage_count: dbModel?.usage_count || 0,
+        total_prompt_tokens: dbModel?.total_prompt_tokens || 0,
+        total_completion_tokens: dbModel?.total_completion_tokens || 0,
+        last_used_at: dbModel?.last_used_at || null
       };
     });
     
@@ -102,12 +106,13 @@ router.delete('/:name', async (req, res) => {
       return res.status(400).json({ error: 'Model name is required' });
     }
 
+    // Delete from Ollama first
     await ollamaService.deleteModel(name);
     
-    // Sync models after deletion
-    await databaseService.syncModels();
+    // Then delete from database
+    await databaseService.deleteModel(name);
     
-    res.json({ message: 'Model deleted successfully' });
+    res.json({ message: 'Model deleted successfully from both Ollama and database' });
   } catch (error) {
     console.error('Error deleting model:', error);
     res.status(500).json({ error: 'Failed to delete model' });

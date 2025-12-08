@@ -29,6 +29,7 @@ const PromptManager: React.FC = () => {
   const [formData, setFormData] = useState({ prompt: '', tags: '', modelIds: [] as number[], quality_rating: null as number | null, comment: '' });
   const [viewingPrompt, setViewingPrompt] = useState<Prompt | null>(null);
   const [copiedId, setCopiedId] = useState<number | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{ show: boolean; promptId: number | null }>({ show: false, promptId: null });
 
   useEffect(() => {
     fetchPrompts();
@@ -101,8 +102,14 @@ const PromptManager: React.FC = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this prompt?')) return;
-    
+    setConfirmDelete({ show: true, promptId: id });
+  };
+
+  const confirmDeletePrompt = async () => {
+    const id = confirmDelete.promptId;
+    if (!id) return;
+
+    setConfirmDelete({ show: false, promptId: null });
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/prompts/${id}`, {
         method: 'DELETE'
@@ -617,6 +624,41 @@ const PromptManager: React.FC = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      {confirmDelete.show && (
+        <div className="modal-overlay" onClick={() => setConfirmDelete({ show: false, promptId: null })}>
+          <div className="modal-content" style={{ maxWidth: '28rem' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>Delete Prompt</h2>
+            </div>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <p style={{ color: 'var(--text-primary)', marginBottom: '1rem' }}>
+                Are you sure you want to delete this prompt?
+              </p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+                This action cannot be undone.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setConfirmDelete({ show: false, promptId: null })}
+                className="btn-secondary"
+                style={{ padding: '0.625rem 1.25rem', border: 'none' }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeletePrompt}
+                className="btn-danger"
+                style={{ padding: '0.625rem 1.25rem', border: 'none' }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

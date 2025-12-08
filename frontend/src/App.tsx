@@ -1,5 +1,6 @@
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useState, useRef } from 'react';
 import Sidebar from './components/Sidebar';
 import ChatInterface from './components/ChatInterface';
 import DocumentUploader from './components/DocumentUploader';
@@ -40,14 +41,36 @@ const PromptsPage = () => (
 );
 
 function App() {
+  const chatInterfaceRef = useRef<any>(null);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
+
+  const handleNavigationAttempt = (path: string): boolean => {
+    // If trying to navigate away from chat, check for unsaved changes
+    if (window.location.pathname === '/' && path !== '/') {
+      if (chatInterfaceRef.current?.hasUnsavedChanges()) {
+        setPendingNavigation(path);
+        chatInterfaceRef.current?.showNavigationPrompt();
+        return false; // Block navigation
+      }
+    }
+    return true; // Allow navigation
+  };
+
+  const handleNavigationConfirmed = () => {
+    if (pendingNavigation) {
+      window.location.href = pendingNavigation;
+      setPendingNavigation(null);
+    }
+  };
+
   return (
     <Router>
       <div className="app-container">
-        <Sidebar />
+        <Sidebar onNavigationAttempt={handleNavigationAttempt} />
         <main className="main-content">
           <div className="background-gradient" />
           <Routes>
-            <Route path="/" element={<ChatInterface />} />
+            <Route path="/" element={<ChatInterface ref={chatInterfaceRef} onNavigationConfirmed={handleNavigationConfirmed} />} />
             <Route path="/documents" element={<DocumentsPage />} />
             <Route path="/websites" element={<WebsitesPage />} />
             <Route path="/models" element={<ModelsPage />} />
