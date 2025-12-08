@@ -1,4 +1,4 @@
-# Ollama Document Training Studio
+# Ollama Assistant
 
 A full-stack application to train (customize) Ollama models with your own documents. Upload PDFs, text files, or Word documents, and create specialized model variants to chat with.
 
