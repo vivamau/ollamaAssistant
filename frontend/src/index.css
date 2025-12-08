@@ -9,9 +9,9 @@
   --border-color: #334155;
   --glass-bg: rgba(30, 41, 59, 0.7);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --accent-primary: #3b82f6;
-  --accent-secondary: #60a5fa;
-  --accent-glow: rgba(59, 130, 246, 0.5);
+  --accent-primary: #1AD5BE;
+  --accent-secondary: #4DE8D6;
+  --accent-glow: rgba(26, 213, 190, 0.5);
   --danger-bg: rgba(220, 38, 38, 0.1);
   --danger-text: #ef4444;
   --success-bg: rgba(34, 197, 94, 0.1);
@@ -34,9 +34,9 @@
     --border-color: #cbd5e1;
     --glass-bg: rgba(255, 255, 255, 0.7);
     --glass-border: rgba(0, 0, 0, 0.1);
-    --accent-primary: #2563eb;
-    --accent-secondary: #3b82f6;
-    --accent-glow: rgba(37, 99, 235, 0.3);
+    --accent-primary: #14B8A6;
+    --accent-secondary: #1AD5BE;
+    --accent-glow: rgba(20, 184, 166, 0.3);
     --danger-bg: rgba(220, 38, 38, 0.1);
     --danger-text: #dc2626;
     --success-bg: rgba(22, 163, 74, 0.1);
@@ -86,7 +86,6 @@ body {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary {
@@ -98,12 +97,10 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 0 15px var(--accent-glow);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 25px var(--accent-glow);
 }
 
 .input-field {

@@ -61,7 +61,6 @@
 .theme-option.active {
   background: rgba(59, 130, 246, 0.1);
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .theme-option-icon {
@@ -94,6 +93,44 @@
 .theme-option-description {
   font-size: 0.875rem;
   color: var(--text-secondary);
+}
+
+/* Dark theme (explicit) */
+[data-theme="dark"] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --border-color: #334155;
+  --glass-bg: rgba(30, 41, 59, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --accent-primary: #1AD5BE;
+}
+
+[data-theme="dark"] .app-container {
+  background-color: #0f172a;
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .sidebar {
+  background-color: #1e293b;
+  border-right-color: #334155;
+}
+
+[data-theme="dark"] .settings-section {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .theme-option {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .theme-option:hover {
+  background: #334155;
 }
 
 /* Light theme overrides */
@@ -144,4 +181,19 @@
 [data-theme="light"] .input-area {
   background-color: #f8fafc;
   border-top-color: #e2e8f0;
+}
+
+[data-theme="light"] .settings-section {
+  background: rgba(226, 232, 240, 0.7);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .theme-option {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .theme-option:hover {
+  background: #f1f5f9;
 }

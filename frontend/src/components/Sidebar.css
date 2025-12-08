@@ -1,11 +1,41 @@
 .sidebar {
-  width: 16rem;
+  width: 11rem;
   height: 100vh;
   background-color: var(--bg-primary);
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   padding: 1rem;
+  transition: width 300ms ease;
+  position: relative;
+}
+
+.sidebar.collapsed {
+  width: 4rem;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 1rem;
+  right: -0.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 200ms;
+  z-index: 100;
+}
+
+.sidebar-toggle:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
 }
 
 .sidebar-header {
@@ -16,14 +46,26 @@
   margin-bottom: 2rem;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+  transition: all 300ms ease;
+}
+
+.sidebar.collapsed .sidebar-header {
+  flex-direction: column;
+  gap: 0;
 }
 
 .logo-container {
-  width: 5rem;
-  height: 5rem;
+  width: 6rem;
+  height: 6rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 300ms ease;
+}
+
+.sidebar.collapsed .logo-container {
+  width: 4rem;
+  height: 4rem;
 }
 
 .app-logo {
@@ -36,29 +78,42 @@
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-primary);
+  transition: opacity 300ms ease;
+}
+
+.sidebar.collapsed .app-title {
+  display: none;
 }
 
 .nav-list {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.2rem;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
   transition: all 200ms;
   text-decoration: none;
+}
+
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 0 0.2rem;
+}
+
+.sidebar.collapsed .nav-item span {
+  display: none;
 }
 
 .nav-item.active {
   background-color: var(--accent-primary);
   color: white;
-  box-shadow: 0 10px 15px -3px var(--accent-glow);
 }
 
 .nav-item.inactive {
@@ -73,14 +128,20 @@
 .sidebar-footer {
   margin-top: auto;
   padding-top: 1rem;
-  border-top: 1px solid var(--border-color);
 }
 
 .font-medium {
   font-weight: 500;
 }
+
+/* Dark theme hover (explicit) */
+[data-theme="dark"] .nav-item.inactive:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+}
+
 /* Light theme hover override */
 [data-theme="light"] .nav-item.inactive:hover {
-  background-color: #94a3b8;
-  color: white;
+  background-color: #f1f5f9;
+  color: #0f172a;
 }

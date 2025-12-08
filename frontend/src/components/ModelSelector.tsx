@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Database, Download, Check, AlertTriangle, Loader2, Trash2 } from 'lucide-react';
+import { Database, Download, Loader2, Trash2 } from 'lucide-react';
 import './Components.css';
 
 interface Model {
@@ -173,7 +173,6 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ onSelect, selectedModel }
                 >
                   <div className="model-header">
                     <h4 className="font-medium text-lg" style={{ paddingRight: '2rem' }}>{model.name}</h4>
-                    {selectedModel === model.name && <Check className="text-blue-500" size={20} />}
                   </div>
                   <div className="model-meta">
                     <span>{formatSize(model.size)}</span>
@@ -194,7 +193,6 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ onSelect, selectedModel }
         </h3>
         
         <div className="warning-alert">
-          <AlertTriangle className="text-yellow-500 shrink-0" />
           <p className="text-sm">
             Downloading models requires significant disk space and bandwidth. 
             Standard models range from 2GB to 8GB.

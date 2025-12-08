@@ -246,14 +246,28 @@
   padding: 1rem 1.5rem;
   padding-right: 3.5rem;
   color: var(--text-primary);
-  font-size:1em;
+  font-size: 1em;
   transition: all 200ms;
 }
 
 .chat-input:focus {
   outline: none;
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 1px var(--accent-primary);
+}
+
+/* Dark theme chat input */
+[data-theme="dark"] .chat-input {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .chat-input::placeholder {
+  color: #64748b;
+}
+
+[data-theme="dark"] .chat-input:focus {
+  border-color: #1AD5BE;
 }
 
 .send-btn {

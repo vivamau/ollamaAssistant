@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Upload, CheckCircle, AlertCircle } from 'lucide-react';
 import './Components.css';
 
 const DocumentUploader: React.FC = () => {
@@ -22,6 +22,13 @@ const DocumentUploader: React.FC = () => {
     setIsDragging(false);
     const files = e.dataTransfer.files;
     if (files.length > 0) {
+      handleUpload(files[0]);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
       handleUpload(files[0]);
     }
   };
@@ -52,38 +59,29 @@ const DocumentUploader: React.FC = () => {
   return (
     <div className="uploader-container">
       <div
-        className={`dropzone ${isDragging ? 'dragging' : 'idle'}`}
+        className={`upload-zone ${isDragging ? 'dragging' : ''}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onClick={() => fileInputRef.current?.click()}
       >
         <input
-          type="file"
           ref={fileInputRef}
-          className="hidden"
-          onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])}
-          accept=".pdf,.docx,.txt,.md,.csv,.html"
+          type="file"
+          onChange={handleFileSelect}
+          accept=".pdf,.txt,.doc,.docx,.md,.csv,.html"
+          style={{ display: 'none' }}
         />
-
-        <div className="upload-content">
-          <div className={`icon-wrapper ${uploading ? 'loading' : 'idle'}`}>
-            {uploading ? (
-              <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-            ) : (
-              <Upload className="w-8 h-8 text-slate-400" />
-            )}
-          </div>
-          
-          <div>
-            <h3 className="text-xl font-semibold mb-2">
-              {uploading ? 'Uploading...' : 'Drop your documents here'}
-            </h3>
-            <p className="text-slate-400">
-              Support for PDF, DOCX, CSV, MD, HTML
-            </p>
-          </div>
-        </div>
+        <Upload className="upload-icon" size={48} />
+        <p className="upload-text">Drag and drop your document here</p>
+        <p className="upload-subtext">or</p>
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="upload-link"
+        >
+          click here to upload a document
+        </button>
+        <p className="upload-hint">Supported formats: PDF, TXT, DOC, DOCX, MD, CSV, HTML</p>
       </div>
 
       {status && (

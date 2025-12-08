@@ -94,6 +94,8 @@ const DocumentList: React.FC = () => {
                     <button
                       onClick={() => setSelectedDocId(doc.ID)}
                       className="context-toggle"
+                      title="Train model with this document"
+                      style={{ whiteSpace: 'nowrap', minWidth: '120px' }}
                     >
                       <Database size={16} />
                       Train Model
