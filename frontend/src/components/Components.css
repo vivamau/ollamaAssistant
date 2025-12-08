@@ -178,6 +178,21 @@
   border-color: #1AD5BE;
 }
 
+/* Light theme for input fields */
+[data-theme="light"] .input-field {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  color: #0f172a;
+}
+
+[data-theme="light"] .input-field::placeholder {
+  color: #94a3b8;
+}
+
+[data-theme="light"] .input-field:focus {
+  border-color: #1AD5BE;
+}
+
 /* ModelSelector */
 .model-selector-container {
   max-width: 56rem;
@@ -236,6 +251,24 @@
   color: #f8fafc;
 }
 
+[data-theme="light"] .model-card.idle {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  color: #0f172a;
+}
+
+[data-theme="light"] .model-card.idle:hover {
+  background-color: #f1f5f9;
+  border-color: #1AD5BE;
+  color: #0f172a;
+}
+
+[data-theme="light"] .model-card.selected {
+  background-color: rgba(26, 213, 190, 0.1);
+  border-color: #1AD5BE;
+  color: #0f172a;
+}
+
 .model-header {
   display: flex;
   align-items: center;
@@ -262,6 +295,16 @@
 
 .warning-alert p {
   color: var(--warning-text);
+}
+
+/* Light theme warning alert */
+[data-theme="light"] .warning-alert {
+  background-color: #fef3c7;
+  border-color: #f59e0b;
+}
+
+[data-theme="light"] .warning-alert p {
+  color: #92400e;
 }
 
 .pull-form {
@@ -379,6 +422,15 @@
   color: #f8fafc;
 }
 
+[data-theme="light"] .data-row:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+[data-theme="light"] .data-row:hover td {
+  color: #0f172a;
+}
+
 .data-row:last-child td {
   border-bottom: none;
 }
@@ -413,6 +465,13 @@
   white-space: nowrap;
 }
 
+/* Light theme tags */
+[data-theme="light"] .tag {
+  background-color: #e2e8f0;
+  border-color: #cbd5e1;
+  color: #065f46;
+}
+
 /* Actions */
 .table-action-btn {
   padding: 0.5rem;
@@ -440,4 +499,15 @@
 /* Shared Hover Class */
 .hover-bg:hover {
   background-color: var(--hover-bg) !important;
+}
+
+/* Light theme button hovers */
+[data-theme="light"] .table-action-btn:hover {
+  background-color: #e2e8f0;
+  color: #475569;
+}
+
+[data-theme="light"] .table-action-btn.table-action-danger:hover {
+  background-color: #fee2e2;
+  color: #dc2626;
 }

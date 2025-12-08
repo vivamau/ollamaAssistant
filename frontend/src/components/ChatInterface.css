@@ -518,6 +518,21 @@
   white-space: nowrap;
 }
 
+/* Light theme tags */
+[data-theme="light"] .model-tag,
+[data-theme="light"] .tag {
+  background-color: #cbd5e1;
+  border-color: #94a3b8;
+  color: #065f46;
+}
+
+/* Light theme model badges (override inline styles) */
+[data-theme="light"] .tag[style*="accent-glow"],
+[data-theme="light"] .tag[style*="accent-secondary"] {
+  background-color: #d1fae5 !important;
+  color: #065f46 !important;
+}
+
 .table-action-btn {
   padding: 0.5rem;
   border-radius: 0.5rem;
