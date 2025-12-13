@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Backend chat files and database
+backend/chats/
+backend/data/ollamaAssistant.db
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

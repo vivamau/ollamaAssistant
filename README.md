@@ -28,7 +28,20 @@ REDIS_COMMAND_TIMEOUT=5000  # Command timeout in ms
 **Note**: Redis is optional. The application will work without it, but enabling Redis provides caching for improved performance.
 
 ### Database
-The application uses **SQLite** for data storage. The database file is automatically created at:
+The application uses **SQLite** for data storage. 
+
+**⚠️ Important**: Before running the application for the first time, you need to set up the database:
+```bash
+cd backend/data
+cp ollamaAssistant-sample.db ollamaAssistant.db
+```
+Or on Windows:
+```bash
+cd backend/data
+copy ollamaAssistant-sample.db ollamaAssistant.db
+```
+
+The database file will be located at:
 ```
 backend/data/ollamaAssistant.db
 ```
@@ -40,17 +53,26 @@ backend/data/ollamaAssistant.db
 - `Prompts` - Stores saved prompts with ratings and comments
 - `PromptModels` - Links prompts to specific models
 
+**Chat Storage**: Chat conversations are saved as individual files in the `backend/chats/` folder for easy backup and portability.
+
 **Migrations**: Database migrations run automatically when the backend starts. No manual setup required!
 
 ## 🛠️ Installation & Setup
 
-### 1. Start Ollama
+### 1. Setup Database
+Before starting the application, rename the sample database file:
+```bash
+cd backend/data
+cp ollamaAssistant-sample.db ollamaAssistant.db
+```
+
+### 2. Start Ollama
 Make sure Ollama is running in the background:
 ```bash
 ollama serve
 ```
 
-### 2. Backend Setup
+### 3. Backend Setup
 The backend handles document processing and communicates with Ollama.
 
 ```bash
@@ -60,7 +82,7 @@ npm run dev
 ```
 *Server runs on http://localhost:3000*
 
-### 3. Frontend Setup
+### 4. Frontend Setup
 The frontend provides the user interface.
 
 ```bash
