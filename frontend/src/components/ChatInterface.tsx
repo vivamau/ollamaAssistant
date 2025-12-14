@@ -520,30 +520,38 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>((props, ref) => {
       )}
 
       {showSaveDialog && (
-        <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: '32rem' }}>
+        <div className="modal-overlay" onClick={() => setShowSaveDialog(false)}>
+          <div className="modal-content" style={{ maxWidth: '28rem' }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 className="text-2xl font-bold">Save Current Chat?</h2>
+              <h2 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>Save Current Chat?</h2>
             </div>
-            <p className="text-slate-300 mb-6">
-              You have an ongoing chat. Would you like to save it before starting a new one?
-            </p>
-            <div className="flex gap-3 justify-end">
+            <div style={{ marginBottom: '1.5rem' }}>
+              <p style={{ color: 'var(--text-primary)', marginBottom: '1rem' }}>
+                You have an ongoing chat.
+              </p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+                Would you like to save it before starting a new one?
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
               <button
                 onClick={() => setShowSaveDialog(false)}
-                className="close-btn btn-secondary"
+                className="btn-secondary"
+                style={{ padding: '0.625rem 1.25rem', border: 'none' }}
               >
                 Cancel
               </button>
               <button
                 onClick={handleClearChat}
-                className="close-btn btn-danger"
+                className="btn-danger"
+                style={{ padding: '0.625rem 1.25rem', border: 'none' }}
               >
                 Don't Save
               </button>
               <button
                 onClick={() => handleSaveChat(true)}
-                className="close-btn btn-primary-action"
+                className="btn-primary"
+                style={{ padding: '0.625rem 1.25rem', border: 'none' }}
               >
                 Save
               </button>
