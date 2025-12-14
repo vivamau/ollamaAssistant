@@ -47,8 +47,8 @@ const WebsiteInput: React.FC<WebsiteInputProps> = ({ onWebsiteAdded }) => {
             <Globe className="text-blue-500" size={24} />
           </div>
           <div>
-            <h3 className="text-lg font-semibold">Add Website Content</h3>
-            <p className="text-slate-400 text-sm">Scrape and train on website data</p>
+            <h3 className="text-lg font-semibold">Add Website or Video</h3>
+            <p className="text-slate-400 text-sm">Scrape website or YouTube video transcript</p>
           </div>
         </div>
 
@@ -57,7 +57,7 @@ const WebsiteInput: React.FC<WebsiteInputProps> = ({ onWebsiteAdded }) => {
             type="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://example.com"
+            placeholder="https://example.com or YouTube URL"
             className="input-field"
             style={{ flex: 1 }}
             required

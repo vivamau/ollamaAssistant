@@ -24,7 +24,9 @@
     "ollama": "^0.4.0",
     "pdf-parse": "^1.1.1",
     "sqlite3": "^5.1.7",
-    "turndown": "^7.1.2"
+    "turndown": "^7.1.2",
+    "youtube-transcript": "^1.2.1",
+    "youtubei.js": "^16.0.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
