@@ -56,21 +56,15 @@ router.get('/:id/content', async (req, res) => {
 
 router.post('/upload', upload.single('file'), async (req, res) => {
   try {
-    console.log('Upload endpoint hit');
-    
     if (!req.file) {
-      console.log('No file in request');
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
     const { path: filePath, mimetype, originalname, filename } = req.file;
     
-    console.log('Processing file:', { originalname, mimetype, filePath });
-    
     // Process document content
     try {
       const content = await documentProcessor.processFile(filePath, mimetype);
-      console.log('File processed successfully, content length:', content.length);
       
       // Add to vector store (keep existing functionality for search)
       await vectorStore.addDocument(content, { source: originalname, type: 'file' });

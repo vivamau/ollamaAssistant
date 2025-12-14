@@ -38,7 +38,6 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({ onSuccess }) => {
   };
 
   const handleUpload = async (file: File) => {
-    console.log('handleUpload called with file:', file.name, file.type, file.size);
     setUploading(true);
     setStatus(null);
 
@@ -46,13 +45,11 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({ onSuccess }) => {
     formData.append('file', file);
 
     try {
-      console.log('Sending request to backend...');
       const response = await fetch('http://localhost:3000/api/documents/upload', {
         method: 'POST',
         body: formData,
       });
 
-      console.log('Response status:', response.status);
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Upload error:', errorData);

@@ -4,7 +4,7 @@ import mammoth from 'mammoth';
 import csv from 'csv-parser';
 import * as cheerio from 'cheerio';
 import TurndownService from 'turndown';
-import { YoutubeTranscript } from 'youtube-transcript';
+import { Innertube, UniversalCache } from 'youtubei.js';
 import ExcelJS from 'exceljs';
 
 export class DocumentProcessor {
@@ -74,6 +74,18 @@ export class DocumentProcessor {
   private async processYoutube(url: string): Promise<string> {
     let content = '';
     
+    console.log('Processing YouTube URL:', url);
+    
+    // Extract video ID from URL
+    const videoIdMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+    const videoId = videoIdMatch ? videoIdMatch[1] : null;
+    
+    if (!videoId) {
+      throw new Error('Invalid YouTube URL - could not extract video ID');
+    }
+    
+    console.log('Extracted video ID:', videoId);
+    
     // 1. Fetch Metadata (Title, Description)
     try {
       const response = await fetch(url, {
@@ -86,39 +98,58 @@ export class DocumentProcessor {
       
       if (title) content += `Title: ${title}\n\n`;
       if (description) content += `Description: ${description}\n\n`;
+      
+      console.log('YouTube metadata fetched:', { title, descriptionLength: description.length });
     } catch (e) {
       console.error('Error fetching YouTube metadata:', e);
     }
 
-    // 2. Fetch Transcript
+    // 2. Fetch Transcript/Captions
     try {
-      // Try to fetch with English preference first
-      let transcriptItems;
+      console.log('Attempting to fetch video info for ID:', videoId);
+      
+      const youtube = await Innertube.create({ 
+        cache: new UniversalCache(false),
+        generate_session_locally: true
+      });
+      
+      const info = await youtube.getInfo(videoId);
+      
       try {
-        transcriptItems = await YoutubeTranscript.fetchTranscript(url, { lang: 'en' });
-      } catch (err) {
-        // Fallback to default/auto
-        console.warn('Failed to fetch English transcript, trying default:', err);
-        transcriptItems = await YoutubeTranscript.fetchTranscript(url);
-      }
-
-      if (transcriptItems && transcriptItems.length > 0) {
-        const transcriptText = transcriptItems.map(item => item.text).join(' ');
-        content += `Transcript:\n${transcriptText}`;
-      } else {
+             const transcriptData = await info.getTranscript();
+             console.log('Transcript data found');
+             
+             if (transcriptData?.transcript?.content?.body?.initial_segments) {
+               const segments = transcriptData.transcript.content.body.initial_segments;
+               const text = segments.map((seg: any) => seg.snippet.text).join(' ');
+               
+               if (text) {
+                 content += `Transcript:\n${text}`;
+                 console.log('Transcript added to content, length:', text.length);
+               } else {
+                 console.warn('Transcript segments found but no text extracted');
+                 content += '\n(No transcript text available)';
+               }
+             } else {
+               console.warn('Transcript data structure not matching expected format');
+               content += '\n(No transcript available)';
+             }
+      } catch (transcriptError: any) {
+        console.warn('Could not retrieve transcript directly:', transcriptError.message);
         content += '\n(No transcript available)';
       }
-    } catch (error) {
-      console.error('Error fetching YouTube transcript:', error);
-      // Try Invidious as last resort fallback for transcript?
-      // For now just note failure
+
+    } catch (error: any) {
+      console.error('Error fetching YouTube info/transcript:', error.message);
       content += '\n(Transcript could not be fetched)';
     }
 
     if (!content.trim()) {
+       console.error('No content extracted from YouTube URL');
        throw new Error('Failed to extract any content from YouTube URL');
     }
 
+    console.log('YouTube processing complete, total content length:', content.length);
     return content;
   }
 
