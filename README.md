@@ -16,17 +16,6 @@ The backend supports the following optional environment variables. Create a `.en
 # Server Configuration
 PORT=3000                    # Backend server port (default: 3000)
 
-# Redis Configuration (Optional - for caching)
-REDIS_HOST=localhost         # Redis server host
-REDIS_PORT=6379             # Redis server port
-REDIS_PASSWORD=             # Redis password (if required)
-REDIS_DB=0                  # Redis database number
-REDIS_CONNECT_TIMEOUT=10000 # Connection timeout in ms
-REDIS_COMMAND_TIMEOUT=5000  # Command timeout in ms
-```
-
-**Note**: Redis is optional. The application will work without it, but enabling Redis provides caching for improved performance.
-
 ### Database
 The application uses **SQLite** for data storage. 
 
