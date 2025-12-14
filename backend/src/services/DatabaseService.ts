@@ -1,17 +1,32 @@
 import sqlite3 from 'sqlite3';
 import path from 'path';
+import fs from 'fs';
 import { ollamaService } from './OllamaService';
 
 export class DatabaseService {
   private db: sqlite3.Database;
 
   constructor() {
-    const dbPath = path.join(__dirname, '../../data/ollamaAssistant.db');
+    let dbPath: string;
+
+    // Check if running in Electron with passed User Data path
+    if (process.env.APP_DATA_PATH) {
+      const dataDir = path.join(process.env.APP_DATA_PATH, 'data');
+      if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+      }
+      dbPath = path.join(dataDir, 'ollamaAssistant.db');
+      console.log('Using Electron User Data path for DB:', dbPath);
+    } else {
+      // Local development fallback
+      dbPath = path.join(__dirname, '../../data/ollamaAssistant.db');
+    }
+
     this.db = new sqlite3.Database(dbPath, (err) => {
       if (err) {
         console.error('Error connecting to database:', err);
       } else {
-        console.log('Connected to SQLite database');
+        console.log('Connected to SQLite database at:', dbPath);
       }
     });
   }

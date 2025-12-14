@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { Ollama } from 'ollama';
 import path from 'path';
+import fs from 'fs';
 
 import chatRoutes from './routes/chat';
 import documentsRoutes from './routes/documents';
@@ -51,7 +52,17 @@ app.listen(port, async () => {
   
   // Run database migrations
   try {
-    const dbPath = path.join(__dirname, '../data/ollamaAssistant.db');
+    let dbPath: string;
+    if (process.env.APP_DATA_PATH) {
+      const dataDir = path.join(process.env.APP_DATA_PATH, 'data');
+      if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+      }
+      dbPath = path.join(dataDir, 'ollamaAssistant.db');
+    } else {
+      dbPath = path.join(__dirname, '../data/ollamaAssistant.db');
+    }
+    
     const migrationRunner = new MigrationRunner(dbPath);
     await migrationRunner.runMigrations(migrations);
     migrationRunner.close();

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useRef } from 'react';
 import Sidebar from './components/Sidebar';
 import ChatInterface from './components/ChatInterface';
@@ -66,8 +66,12 @@ function App() {
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
 
   const handleNavigationAttempt = (path: string): boolean => {
+    // With HashRouter, check hash instead of pathname
+    const currentHash = window.location.hash;
+    const isOnChat = currentHash === '' || currentHash === '#/' || currentHash === '/';
+    
     // If trying to navigate away from chat, check for unsaved changes
-    if (window.location.pathname === '/' && path !== '/') {
+    if (isOnChat && path !== '/') {
       if (chatInterfaceRef.current?.hasUnsavedChanges()) {
         setPendingNavigation(path);
         chatInterfaceRef.current?.showNavigationPrompt();
@@ -79,7 +83,7 @@ function App() {
 
   const handleNavigationConfirmed = () => {
     if (pendingNavigation) {
-      window.location.href = pendingNavigation;
+      window.location.hash = pendingNavigation;
       setPendingNavigation(null);
     }
   };

@@ -54,17 +54,37 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>((props, ref) => {
     scrollToBottom();
   }, [messages]);
 
-  // Initial model fetch
+  // Initial model fetch with retry logic
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/models`)
-      .then(res => res.json())
-      .then(data => {
+    let retryCount = 0;
+    const maxRetries = 10;
+    const retryDelay = 1000; // 1 second
+
+    const fetchModels = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/models`);
+        if (!res.ok) throw new Error('Failed to fetch');
+        
+        const data = await res.json();
         if (data.models?.length > 0) {
           setModels(data.models);
           setSelectedModel(data.models[0].name);
         }
-      })
-      .catch(console.error);
+      } catch (error) {
+        console.error('Error fetching models:', error);
+        
+        // Retry if we haven't exceeded max retries
+        if (retryCount < maxRetries) {
+          retryCount++;
+          console.log(`Retrying... (${retryCount}/${maxRetries})`);
+          setTimeout(fetchModels, retryDelay);
+        } else {
+          console.error('Max retries reached. Backend may not be running.');
+        }
+      }
+    };
+
+    fetchModels();
   }, []);
 
   const handleModelChange = (newModel: string) => {
@@ -272,7 +292,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>((props, ref) => {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        await response.json(); // Consumed but unused
         setHasUnsaved(false); // Clear unsaved flag after save
         setShowSuccessAnimation(true);
         setTimeout(() => setShowSuccessAnimation(false), 3000); // Hide after 3 seconds

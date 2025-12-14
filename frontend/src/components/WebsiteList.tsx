@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Globe, Database, Loader2, Trash2, Eye } from 'lucide-react';
+import { Database, Loader2, Trash2, Eye } from 'lucide-react';
 import CreateModelModal from './CreateModelModal';
 import './Components.css';
 

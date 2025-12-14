@@ -8,7 +8,7 @@ interface DocumentUploaderProps {
 
 const DocumentUploader: React.FC<DocumentUploaderProps> = ({ onSuccess }) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [, setUploading] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 

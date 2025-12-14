@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import './Components.css';
 
 interface WebsiteInputProps {

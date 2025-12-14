@@ -10,9 +10,11 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dist_electron
 *.local
 
 # Package lock files
+package-lock.json
 backend/package-lock.json
 frontend/package-lock.json
 
