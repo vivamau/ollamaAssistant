@@ -217,16 +217,24 @@ const CreateModelModal: React.FC<CreateModelModalProps> = ({ documentId, sourceT
             </div>
           )}
 
-          <div className="flex gap-3 justify-end">
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+            {!loading && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="btn-secondary"
+                style={{ padding: '0.625rem 1.25rem', border: 'none' }}
+              >
+                Cancel
+              </button>
+            )}
             <button
               type="submit"
               disabled={loading || !baseModel || !newModelName}
-              className="close-btn"
+              className="btn-primary-action"
               style={{ 
-                padding: '0.5rem 1rem', 
-                backgroundColor: loading || !baseModel || !newModelName ? 'var(--bg-tertiary)' : 'var(--accent-primary)', 
-                borderRadius: '0.5rem', 
-                color: 'white',
+                padding: '0.625rem 1.25rem', 
+                border: 'none',
                 opacity: loading || !baseModel || !newModelName ? 0.5 : 1,
                 cursor: loading || !baseModel || !newModelName ? 'not-allowed' : 'pointer',
                 display: 'flex',
@@ -243,16 +251,6 @@ const CreateModelModal: React.FC<CreateModelModalProps> = ({ documentId, sourceT
                 'Create Model'
               )}
             </button>
-            {!loading && (
-              <button
-                type="button"
-                onClick={onClose}
-                className="close-btn"
-                style={{ padding: '0.5rem 1rem', backgroundColor: 'var(--bg-tertiary)', borderRadius: '0.5rem', marginLeft: '0.75rem' }}
-              >
-                Cancel
-              </button>
-            )}
           </div>
         </form>
       </div>

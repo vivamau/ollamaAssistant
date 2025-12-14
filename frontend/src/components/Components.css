@@ -26,17 +26,16 @@
   background: var(--accent-primary);
   color: white;
   border: none;
-  padding: 0.625rem 0.75rem;
+  padding: 0.45rem 0.6rem;
   border-radius: 0.5rem;
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: 0.7rem;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
   background: var(--accent-secondary);
-  transform: translateY(-2px);
 }
 
 /* Removed light theme override to use global accent color */

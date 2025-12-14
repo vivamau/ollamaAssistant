@@ -43,9 +43,6 @@ const WebsiteInput: React.FC<WebsiteInputProps> = ({ onWebsiteAdded }) => {
     <div className="website-input-container">
       <div className="glass-panel" style={{ padding: '2rem' }}>
         <div className="section-header">
-          <div className="icon-box">
-            <Globe className="text-blue-500" size={24} />
-          </div>
           <div>
             <h3 className="text-lg font-semibold">Add Website or Video</h3>
             <p className="text-slate-400 text-sm">Scrape website or YouTube video transcript</p>

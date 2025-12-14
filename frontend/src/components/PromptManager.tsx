@@ -155,17 +155,24 @@ const PromptManager: React.FC = () => {
         </button>
       </div>
 
+
       {showForm && (
-        <div style={{ 
-          backgroundColor: 'var(--bg-secondary)', 
-          border: '1px solid var(--border-color)', 
-          borderRadius: '0.75rem', 
-          padding: '1.5rem',
-          marginBottom: '2rem'
-        }}>
-          <h3 style={{ color: 'var(--text-primary)', marginBottom: '1rem', fontSize: '1.125rem', fontWeight: '600' }}>
-            {editingId ? 'Edit Prompt' : 'New Prompt'}
-          </h3>
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: '48rem' }}>
+            <div className="modal-header">
+              <h2 className="text-2xl font-bold">{editingId ? 'Edit Prompt' : 'New Prompt'}</h2>
+              <button 
+                onClick={() => {
+                  setShowForm(false);
+                  setEditingId(null);
+                  setFormData({ prompt: '', tags: '', modelIds: [], quality_rating: null, comment: '' });
+                }} 
+                className="close-btn"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: '1rem' }}>
               <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
@@ -321,7 +328,7 @@ const PromptManager: React.FC = () => {
                 style={{ resize: 'vertical', paddingRight: '1.5rem' }}
               />
             </div>
-            <div className="flex gap-3 justify-end">
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
               <button
                 type="button"
                 onClick={() => {
@@ -329,18 +336,21 @@ const PromptManager: React.FC = () => {
                   setEditingId(null);
                   setFormData({ prompt: '', tags: '', modelIds: [], quality_rating: null, comment: '' });
                 }}
-                className="close-btn btn-secondary"
+                className="btn-secondary"
+                style={{ padding: '0.625rem 1.25rem', border: 'none' }}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="close-btn btn-primary-action"
+                className="btn-primary-action"
+                style={{ padding: '0.625rem 1.25rem', border: 'none' }}
               >
                 {editingId ? 'Update' : 'Create'}
               </button>
             </div>
           </form>
+          </div>
         </div>
       )}
 
@@ -355,14 +365,13 @@ const PromptManager: React.FC = () => {
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0' }}>
                 Prompt
               </label>
               <div style={{
                 backgroundColor: 'var(--bg-secondary)',
-                border: '1px solid var(--border-color)',
                 borderRadius: '0.75rem',
-                padding: '1rem 1.5rem',
+                padding: '1rem 1.5rem 1rem 0',
                 color: 'var(--text-primary)',
                 fontSize: '1em',
                 whiteSpace: 'pre-wrap',
@@ -435,14 +444,13 @@ const PromptManager: React.FC = () => {
 
             {viewingPrompt.comment && (
               <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0' }}>
                   Experience Comment
                 </label>
                 <div style={{
                   backgroundColor: 'var(--bg-secondary)',
-                  border: '1px solid var(--border-color)',
                   borderRadius: '0.75rem',
-                  padding: '1rem 1.5rem',
+                  padding: '1rem 1.5rem 1rem 0',
                   color: 'var(--text-primary)',
                   fontSize: '0.9375rem',
                   whiteSpace: 'pre-wrap'
@@ -452,20 +460,21 @@ const PromptManager: React.FC = () => {
               </div>
             )}
 
-            <div className="flex gap-3 justify-end">
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setViewingPrompt(null)}
+                className="btn-secondary"
+                style={{ padding: '0.625rem 1.25rem', border: 'none' }}
+              >
+                Close
+              </button>
               <button
                 onClick={() => handleCopy(viewingPrompt)}
-                className="close-btn btn-primary-action"
-                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                className="btn-primary-action"
+                style={{ padding: '0.625rem 1.25rem', border: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
               >
                 {copiedId === viewingPrompt.ID ? <Check size={18} /> : <Copy size={18} />}
                 {copiedId === viewingPrompt.ID ? 'Copied!' : 'Copy to Clipboard'}
-              </button>
-              <button
-                onClick={() => setViewingPrompt(null)}
-                className="close-btn btn-secondary"
-              >
-                Close
               </button>
             </div>
           </div>

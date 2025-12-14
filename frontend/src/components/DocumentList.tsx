@@ -94,9 +94,6 @@ const DocumentList: React.FC = () => {
                 <tr key={doc.ID} className="data-row">
                   <td>
                     <div className="flex items-center gap-3">
-                      <div className="bg-blue-500/10 p-2 rounded-lg">
-                        <FileText className="text-blue-400" size={16} />
-                      </div>
                       <span className="font-medium text-slate-200">{doc.original_name}</span>
                     </div>
                   </td>

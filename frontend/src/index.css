@@ -61,6 +61,26 @@ body {
   box-sizing: border-box;
 }
 
+/* Link styles */
+a {
+  color: #60a5fa;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+[data-theme="light"] a {
+  color: var(--accent-primary);
+}
+
+[data-theme="light"] a:hover {
+  color: var(--accent-secondary);
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -92,17 +112,16 @@ body {
   background: var(--accent-primary);
   color: white;
   border: none;
-  padding: 10px 12px;
+  padding: 6px 12px;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: 0.1rem;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
   background: var(--accent-secondary);
-  transform: translateY(-2px);
 }
 
 .input-field {

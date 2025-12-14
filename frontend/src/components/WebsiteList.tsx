@@ -73,7 +73,6 @@ const WebsiteList: React.FC = () => {
           </div>
         ) : websites.length === 0 ? (
           <div className="text-center text-slate-500 py-8 bg-slate-800/50 rounded-lg border border-slate-700">
-            <Globe className="mx-auto mb-2 opacity-50" size={32} />
             <p>No websites scraped yet</p>
           </div>
         ) : (
@@ -92,9 +91,6 @@ const WebsiteList: React.FC = () => {
                   <tr key={website.ID} className="data-row">
                     <td>
                       <div className="flex items-center gap-3">
-                        <div className="bg-blue-500/10 p-2 rounded-lg">
-                          <Globe className="text-blue-400" size={16} />
-                        </div>
                         <a
                           href={website.url}
                           target="_blank"

@@ -425,8 +425,9 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>((props, ref) => {
         <div className="header-controls">
           <button
             onClick={handleNewChat}
-            className="context-toggle"
+            className="btn-primary"
             title="New Chat"
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
           >
             <MessageSquarePlus size={16} />
             New Chat
@@ -437,9 +438,9 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>((props, ref) => {
               onClick={() => setShowModelDropdown(!showModelDropdown)}
               className="model-badge clickable"
             >
-              <Bot size={18} className="text-slate-400" />
-              <span className="font-medium text-sm text-slate-400">{selectedModel}</span>
-              <ChevronDown size={16} className="text-slate-400" />
+              <Bot size={18} />
+              <span className="font-medium text-sm">{selectedModel}</span>
+              <ChevronDown size={16} />
             </button>
             
             {showModelDropdown && (
