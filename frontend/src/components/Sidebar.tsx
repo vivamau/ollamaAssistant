@@ -58,7 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigationAttempt }) => {
 
   const navItems = [
     { path: '/', label: 'Chat', icon: MessageSquare },
-    { path: '/documents', label: 'Sources', icon: FileText },
+    { path: '/documents', label: 'Documents', icon: FileText },
     { path: '/websites', label: 'Websites', icon: Globe },
     { path: '/models', label: 'Models', icon: Database },
     { path: '/prompts', label: 'Prompts', icon: Sparkles },
