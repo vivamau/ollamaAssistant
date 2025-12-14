@@ -164,6 +164,11 @@
   color: var(--text-primary);
 }
 
+[data-theme="dark"] .settings-btn:hover {
+  background-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
 [data-theme="light"] .settings-btn:hover {
   background-color: #e0e7ff;
   color: #1e293b;
@@ -281,7 +286,7 @@
 }
 
 [data-theme="dark"] .chat-input:focus {
-  border-color: #1AD5BE;
+  border-color: var(--accent-primary);
 }
 
 .send-btn {

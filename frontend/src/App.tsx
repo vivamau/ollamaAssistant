@@ -47,6 +47,7 @@ const ModelsPage = () => (
 
 const PromptsPage = () => (
   <div className="page-container">
+    <h2 className="page-title">Prompts</h2>
     <PromptManager />
   </div>
 );

@@ -23,20 +23,20 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  background: var(--accent-primary);
   color: white;
   border: none;
-  padding: 0.625rem 1.25rem;
+  padding: 0.625rem 0.75rem;
   border-radius: 0.5rem;
   font-weight: 600;
+  font-size: 0.9375rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  /* Removed: box-shadow: 0 0 15px var(--accent-glow); */
 }
 
 .btn-primary:hover {
+  background: var(--accent-secondary);
   transform: translateY(-2px);
-  /* Removed: box-shadow: 0 0 25px var(--accent-glow); */
 }
 
 /* Removed light theme override to use global accent color */
@@ -187,7 +187,7 @@
 }
 
 [data-theme="dark"] .input-field:focus {
-  border-color: #1AD5BE;
+  border-color: var(--accent-primary);
 }
 
 /* Light theme for input fields */
@@ -202,7 +202,16 @@
 }
 
 [data-theme="light"] .input-field:focus {
-  border-color: #1AD5BE;
+  border-color: var(--accent-primary);
+}
+
+/* PromptManager */
+.prompt-manager-container {
+  max-width: 56rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 /* ModelSelector */
@@ -253,13 +262,13 @@
 
 [data-theme="dark"] .model-card.idle:hover {
   background-color: #334155;
-  border-color: #1AD5BE;
+  border-color: var(--accent-primary);
   color: #f8fafc;
 }
 
 [data-theme="dark"] .model-card.selected {
-  background-color: rgba(26, 213, 190, 0.1);
-  border-color: #1AD5BE;
+  background-color: var(--accent-glow);
+  border-color: var(--accent-primary);
   color: #f8fafc;
 }
 
@@ -271,13 +280,13 @@
 
 [data-theme="light"] .model-card.idle:hover {
   background-color: #f1f5f9;
-  border-color: #1AD5BE;
+  border-color: var(--accent-primary);
   color: #0f172a;
 }
 
 [data-theme="light"] .model-card.selected {
-  background-color: rgba(26, 213, 190, 0.1);
-  border-color: #1AD5BE;
+  background-color: var(--accent-glow);
+  border-color: var(--accent-primary);
   color: #0f172a;
 }
 

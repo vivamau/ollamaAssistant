@@ -138,16 +138,17 @@ const PromptManager: React.FC = () => {
   };
 
   return (
-    <div className="page-container">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h2 className="page-title">Prompts</h2>
+    <div className="prompt-manager-container">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div/>
         <button
           onClick={() => {
             setFormData({ prompt: '', tags: '', modelIds: [], quality_rating: null, comment: '' });
             setEditingId(null);
             setShowForm(!showForm);
           }}
-          className="context-toggle"
+          className="btn-primary"
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
         >
           <Plus size={16} />
           New Prompt
@@ -253,12 +254,7 @@ const PromptManager: React.FC = () => {
                     return 'var(--success-text)'; // Green for 4-5
                   };
                   
-                  const getGlow = () => {
-                    if (!formData.quality_rating || formData.quality_rating < rating) return 'none';
-                    if (formData.quality_rating <= 2) return '0 0 10px rgba(239, 68, 68, 0.5)';
-                    if (formData.quality_rating === 3) return '0 0 10px rgba(96, 165, 250, 0.5)';
-                    return '0 0 10px rgba(34, 197, 94, 0.5)';
-                  };
+
                   
                   return (
                     <button
@@ -275,8 +271,7 @@ const PromptManager: React.FC = () => {
                         transition: 'all 200ms',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: getGlow()
+                        justifyContent: 'center'
                       }}
                       onMouseEnter={(e) => {
                         if (!formData.quality_rating || formData.quality_rating < rating) {
@@ -423,12 +418,7 @@ const PromptManager: React.FC = () => {
                       return 'var(--success-text)'; // Green
                     };
                     
-                    const getGlow = () => {
-                      if (!isActive) return 'none';
-                      if (viewingPrompt.quality_rating! <= 2) return 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))';
-                      if (viewingPrompt.quality_rating! === 3) return 'drop-shadow(0 0 8px rgba(96, 165, 250, 0.6))';
-                      return 'drop-shadow(0 0 8px rgba(34, 197, 94, 0.6))';
-                    };
+
                     
                     return (
                       <Bot 
@@ -436,7 +426,6 @@ const PromptManager: React.FC = () => {
                         size={24} 
                         color={getColor()} 
                         fill={isActive ? getColor() : 'none'}
-                        style={{ filter: getGlow() }}
                       />
                     );
                   })}
@@ -552,12 +541,7 @@ const PromptManager: React.FC = () => {
                             return 'var(--success-text)'; // Green
                           };
                           
-                          const getGlow = () => {
-                            if (!isActive) return 'none';
-                            if (prompt.quality_rating! <= 2) return 'drop-shadow(0 0 6px rgba(239, 68, 68, 0.6))';
-                            if (prompt.quality_rating! === 3) return 'drop-shadow(0 0 6px rgba(96, 165, 250, 0.6))';
-                            return 'drop-shadow(0 0 6px rgba(34, 197, 94, 0.6))';
-                          };
+
                           
                           return (
                             <Bot 
@@ -565,7 +549,6 @@ const PromptManager: React.FC = () => {
                               size={16} 
                               color={getColor()} 
                               fill={isActive ? getColor() : 'none'}
-                              style={{ filter: getGlow() }}
                             />
                           );
                         })
