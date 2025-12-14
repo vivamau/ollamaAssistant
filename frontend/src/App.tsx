@@ -13,14 +13,23 @@ import PromptManager from './components/PromptManager';
 import Settings from './components/Settings';
 import './App.css';
 
+
 // Placeholder components for now
-const DocumentsPage = () => (
-  <div className="page-container">
-    <h2 className="page-title">Documents</h2>
-    <DocumentUploader />
-    <DocumentList />
-  </div>
-);
+const DocumentsPage = () => {
+  const [refreshKey, setRefreshKey] = React.useState(0);
+  
+  const handleDocumentAdded = () => {
+    setRefreshKey(prev => prev + 1);
+  };
+  
+  return (
+    <div className="page-container">
+      <h2 className="page-title">Documents</h2>
+      <DocumentUploader onSuccess={handleDocumentAdded} />
+      <DocumentList key={refreshKey} />
+    </div>
+  );
+};
 
 const WebsitesPage = () => {
   const [refreshKey, setRefreshKey] = React.useState(0);

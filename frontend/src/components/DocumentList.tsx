@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Database, Loader2, Trash2, AlertCircle } from 'lucide-react';
+import { FileText, Database, Loader2, Trash2, AlertCircle, Eye } from 'lucide-react';
 import CreateModelModal from './CreateModelModal';
 
 interface Document {
@@ -10,12 +10,18 @@ interface Document {
   mime_type: string;
 }
 
+interface DocumentWithContent extends Document {
+  content: string;
+}
+
 const DocumentList: React.FC = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDocId, setSelectedDocId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<{ show: boolean; docId: number | null }>({ show: false, docId: null });
+  const [previewDocument, setPreviewDocument] = useState<DocumentWithContent | null>(null);
+  const [loadingPreview, setLoadingPreview] = useState(false);
 
   const fetchDocuments = async () => {
     try {
@@ -55,6 +61,23 @@ const DocumentList: React.FC = () => {
       console.error('Error deleting document:', error);
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handlePreview = async (doc: Document) => {
+    setLoadingPreview(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/documents/${doc.ID}/content`);
+      if (response.ok) {
+        const data = await response.json();
+        setPreviewDocument({ ...doc, content: data.content });
+      } else {
+        console.error('Failed to fetch document content');
+      }
+    } catch (error) {
+      console.error('Error fetching document content:', error);
+    } finally {
+      setLoadingPreview(false);
     }
   };
 
@@ -118,6 +141,20 @@ const DocumentList: React.FC = () => {
                   </td>
                   <td style={{ textAlign: 'right' }}>
                     <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => handlePreview(doc)}
+                        className="context-toggle"
+                        title="Preview content"
+                        style={{ whiteSpace: 'nowrap' }}
+                        disabled={loadingPreview}
+                      >
+                        {loadingPreview ? (
+                          <Loader2 size={16} className="animate-spin" />
+                        ) : (
+                          <Eye size={16} />
+                        )}
+                        Preview
+                      </button>
                       <button
                         onClick={() => setSelectedDocId(doc.ID)}
                         className="context-toggle"
@@ -188,6 +225,58 @@ const DocumentList: React.FC = () => {
                 className="px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 hover:text-red-400 border border-red-500/20 transition-colors"
               >
                 Delete Forever
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {previewDocument && (
+        <div className="modal-overlay" onClick={() => setPreviewDocument(null)}>
+          <div className="modal-content" style={{ maxWidth: '50rem' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div>
+                <h2 className="text-xl font-bold" style={{ color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+                  Content Preview
+                </h2>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+                  {previewDocument.original_name}
+                </p>
+              </div>
+              <button
+                onClick={() => setPreviewDocument(null)}
+                className="close-btn"
+                style={{ padding: '0.5rem', border: 'none' }}
+              >
+                ✕
+              </button>
+            </div>
+            <div style={{ marginTop: '1rem' }}>
+              <div
+                style={{
+                  backgroundColor: 'var(--bg-secondary)',
+                  borderRadius: '0.5rem',
+                  padding: '1rem',
+                  maxHeight: '60vh',
+                  overflowY: 'auto',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                  fontSize: '0.875rem',
+                  lineHeight: '1.6',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--border-color)'
+                }}
+              >
+                {previewDocument.content}
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
+              <button
+                onClick={() => setPreviewDocument(null)}
+                className="btn-secondary"
+                style={{ padding: '0.625rem 1.25rem', border: 'none' }}
+              >
+                Close
               </button>
             </div>
           </div>

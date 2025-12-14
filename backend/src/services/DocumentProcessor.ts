@@ -5,6 +5,7 @@ import csv from 'csv-parser';
 import * as cheerio from 'cheerio';
 import TurndownService from 'turndown';
 import { YoutubeTranscript } from 'youtube-transcript';
+import ExcelJS from 'exceljs';
 
 export class DocumentProcessor {
   private turndownService: TurndownService;
@@ -14,12 +15,27 @@ export class DocumentProcessor {
   }
 
   async processFile(filePath: string, mimeType: string): Promise<string> {
+    // Handle CSV MIME type variations
+    const fileExtension = filePath.split('.').pop()?.toLowerCase();
+    
+    // Normalize MIME type for CSV files
+    if (mimeType === 'text/csv' || mimeType === 'application/csv' || 
+        mimeType === 'application/vnd.ms-excel' && fileExtension === 'csv') {
+      return this.processCSV(filePath);
+    }
+    
     switch (mimeType) {
       case 'application/pdf':
         return this.processPDF(filePath);
       case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
         return this.processDOCX(filePath);
-      case 'text/csv':
+      case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+        return this.processExcel(filePath);
+      case 'application/vnd.ms-excel':
+        // Check extension to differentiate between .xls and .csv
+        if (fileExtension === 'xls' || fileExtension === 'xlsx') {
+          return this.processExcel(filePath);
+        }
         return this.processCSV(filePath);
       case 'text/markdown':
       case 'text/plain':
@@ -27,6 +43,9 @@ export class DocumentProcessor {
       case 'text/html':
         return this.processHTMLFile(filePath);
       default:
+        // Fallback to extension-based detection
+        if (fileExtension === 'csv') return this.processCSV(filePath);
+        if (fileExtension === 'xlsx' || fileExtension === 'xls') return this.processExcel(filePath);
         throw new Error(`Unsupported file type: ${mimeType}`);
     }
   }
@@ -125,6 +144,31 @@ export class DocumentProcessor {
         })
         .on('error', (error) => reject(error));
     });
+  }
+
+  private async processExcel(filePath: string): Promise<string> {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(filePath);
+    
+    let content = '';
+    
+    workbook.eachSheet((worksheet, sheetId) => {
+      if (sheetId > 1) content += '\n\n';
+      content += `Sheet: ${worksheet.name}\n`;
+      
+      const rows: any[][] = [];
+      worksheet.eachRow((row, rowNumber) => {
+        const rowData: any[] = [];
+        row.eachCell((cell, colNumber) => {
+          rowData.push(cell.value);
+        });
+        rows.push(rowData);
+      });
+      
+      content += JSON.stringify(rows, null, 2);
+    });
+    
+    return content;
   }
 
   private async processText(filePath: string): Promise<string> {

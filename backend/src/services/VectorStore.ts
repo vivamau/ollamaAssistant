@@ -26,27 +26,66 @@ export class VectorStore {
   async addDocument(content: string, metadata: any) {
     await this.ensureEmbeddingModel();
 
-    // Simple chunking strategy (split by paragraphs or fixed size)
-    // For now, let's split by paragraphs
-    const paragraphs = content.split(/\n\s*\n/);
+    // Chunk the content with a max size to avoid context length errors
+    const maxChunkSize = 1000; // characters per chunk
+    const chunks = this.chunkText(content, maxChunkSize);
     
-    for (const paragraph of paragraphs) {
-      if (paragraph.trim().length < 10) continue;
+    for (const chunk of chunks) {
+      if (chunk.trim().length < 10) continue;
 
       try {
-        const embeddingResponse = await ollamaService.generateEmbeddings(this.embeddingModel, paragraph);
+        const embeddingResponse = await ollamaService.generateEmbeddings(this.embeddingModel, chunk);
         
         this.chunks.push({
           id: Math.random().toString(36).substring(7),
-          content: paragraph,
+          content: chunk,
           embedding: embeddingResponse.embedding,
           metadata
         });
       } catch (error) {
-        console.error('Error generating embedding:', error);
-        throw error;
+        console.error('Error generating embedding for chunk:', error);
+        // Continue with other chunks instead of failing completely
       }
     }
+  }
+
+  private chunkText(text: string, maxSize: number): string[] {
+    const chunks: string[] = [];
+    
+    // First try to split by paragraphs
+    const paragraphs = text.split(/\n\s*\n/);
+    
+    for (const paragraph of paragraphs) {
+      if (paragraph.length <= maxSize) {
+        chunks.push(paragraph);
+      } else {
+        // If paragraph is too long, split by sentences or fixed size
+        const sentences = paragraph.split(/[.!?]\s+/);
+        let currentChunk = '';
+        
+        for (const sentence of sentences) {
+          if ((currentChunk + sentence).length <= maxSize) {
+            currentChunk += (currentChunk ? '. ' : '') + sentence;
+          } else {
+            if (currentChunk) chunks.push(currentChunk);
+            
+            // If single sentence is too long, split by fixed size
+            if (sentence.length > maxSize) {
+              for (let i = 0; i < sentence.length; i += maxSize) {
+                chunks.push(sentence.substring(i, i + maxSize));
+              }
+              currentChunk = '';
+            } else {
+              currentChunk = sentence;
+            }
+          }
+        }
+        
+        if (currentChunk) chunks.push(currentChunk);
+      }
+    }
+    
+    return chunks.filter(c => c.trim().length > 0);
   }
 
   async search(query: string, k: number = 3): Promise<DocumentChunk[]> {

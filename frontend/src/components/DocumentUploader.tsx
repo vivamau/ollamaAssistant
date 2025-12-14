@@ -2,7 +2,11 @@ import React, { useState, useRef } from 'react';
 import { Upload, CheckCircle, AlertCircle } from 'lucide-react';
 import './Components.css';
 
-const DocumentUploader: React.FC = () => {
+interface DocumentUploaderProps {
+  onSuccess?: () => void;
+}
+
+const DocumentUploader: React.FC<DocumentUploaderProps> = ({ onSuccess }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -34,6 +38,7 @@ const DocumentUploader: React.FC = () => {
   };
 
   const handleUpload = async (file: File) => {
+    console.log('handleUpload called with file:', file.name, file.type, file.size);
     setUploading(true);
     setStatus(null);
 
@@ -41,15 +46,23 @@ const DocumentUploader: React.FC = () => {
     formData.append('file', file);
 
     try {
+      console.log('Sending request to backend...');
       const response = await fetch('http://localhost:3000/api/documents/upload', {
         method: 'POST',
         body: formData,
       });
 
-      if (!response.ok) throw new Error('Upload failed');
+      console.log('Response status:', response.status);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Upload error:', errorData);
+        throw new Error('Upload failed');
+      }
 
       setStatus({ type: 'success', message: `Successfully uploaded ${file.name}` });
+      if (onSuccess) onSuccess();
     } catch (error) {
+      console.error('Upload exception:', error);
       setStatus({ type: 'error', message: 'Failed to upload document. Please try again.' });
     } finally {
       setUploading(false);
@@ -68,7 +81,7 @@ const DocumentUploader: React.FC = () => {
           ref={fileInputRef}
           type="file"
           onChange={handleFileSelect}
-          accept=".pdf,.txt,.doc,.docx,.md,.csv,.html"
+          accept=".pdf,.txt,.doc,.docx,.md,.csv,.html,.xlsx,.xls"
           style={{ display: 'none' }}
         />
         <Upload className="upload-icon" size={48} />
