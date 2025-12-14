@@ -551,7 +551,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>((props, ref) => {
               </button>
               <button
                 onClick={() => handleSaveChat(true)}
-                className="btn-primary"
+                className="btn-primary-action"
                 style={{ padding: '0.625rem 1.25rem', border: 'none' }}
               >
                 Save
@@ -600,7 +600,7 @@ const ChatInterface = forwardRef<any, ChatInterfaceProps>((props, ref) => {
                   setShowNavigationPrompt(false);
                   onNavigationConfirmed?.();
                 }}
-                className="btn-primary"
+                className="btn-primary-action"
                 style={{ padding: '0.625rem 1.25rem', border: 'none' }}
               >
                 Save & Leave

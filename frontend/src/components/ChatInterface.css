@@ -382,6 +382,8 @@
   border-radius: 0.5rem;
   color: white;
   cursor: pointer;
+  font-weight: 600;
+  font-size: 0.875rem;
 }
 
 .btn-danger:hover {
