@@ -555,3 +555,18 @@
   color: var(--danger-text);
   border: 1px solid rgba(239, 68, 68, 0.2);
 }
+
+/* Ensure all interactive elements are clickable with transparent title bar */
+button,
+a,
+input,
+textarea,
+select,
+.action-btn,
+.table-action-btn,
+.btn-primary,
+.btn-secondary,
+.model-card,
+.upload-link {
+  -webkit-app-region: no-drag;
+}

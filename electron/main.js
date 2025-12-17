@@ -16,6 +16,9 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    icon: path.join(__dirname, 'icon.png'),
+    titleBarStyle: 'hiddenInset', // Transparent title bar on macOS
+    vibrancy: 'under-window', // Adds translucent effect
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false, // For simple ipc in this example, consider securing for prod

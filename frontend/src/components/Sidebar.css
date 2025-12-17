@@ -16,7 +16,8 @@
 
 .sidebar-toggle {
   position: absolute;
-  top: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
   right: -0.75rem;
   width: 1.5rem;
   height: 1.5rem;
@@ -159,4 +160,15 @@
 [data-theme="light"] .sidebar.collapsed .logo-container {
   width: 4rem;
   height: 4rem;
+}
+
+/* Make interactive elements clickable in title bar area */
+.nav-item,
+.sidebar-toggle,
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-app-region: no-drag;
 }
