@@ -22,6 +22,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false, // For simple ipc in this example, consider securing for prod
+      webSecurity: true, // Enable web security
     },
   });
 
@@ -102,7 +103,7 @@ function startBackend() {
 
   const env = { 
     ...process.env, 
-    PORT: 3000,
+    PORT: 3001, // Use different port for production to avoid conflicts with dev server
     PATH: fixPathString + (process.platform === 'win32' ? ';' : ':') + (process.env.PATH || ''),
     APP_DATA_PATH: app.getPath('userData'),
     NODE_PATH: path.join(backendPath, 'node_modules')

@@ -48,20 +48,22 @@ backend/data/ollamaAssistant.db
 
 ## 🛠️ Installation & Setup
 
-### 1. Setup Database
+### Option 1: Web Application (Browser)
+
+#### 1. Setup Database
 Before starting the application, rename the sample database file:
 ```bash
 cd backend/data
 cp ollamaAssistant-sample.db ollamaAssistant.db
 ```
 
-### 2. Start Ollama
+#### 2. Start Ollama
 Make sure Ollama is running in the background:
 ```bash
 ollama serve
 ```
 
-### 3. Backend Setup
+#### 3. Backend Setup
 The backend handles document processing and communicates with Ollama.
 
 ```bash
@@ -71,7 +73,7 @@ npm run dev
 ```
 *Server runs on http://localhost:3000*
 
-### 4. Frontend Setup
+#### 4. Frontend Setup
 The frontend provides the user interface.
 
 ```bash
@@ -80,6 +82,59 @@ npm install
 npm run dev
 ```
 *App opens at http://localhost:5173*
+
+### Option 2: Desktop Application (Electron)
+
+#### 1. Install Dependencies
+From the root directory, install all dependencies (backend, frontend, and Electron):
+```bash
+npm install
+```
+This will automatically install dependencies for backend and frontend as well.
+
+#### 2. Setup Database
+```bash
+cd backend/data
+cp ollamaAssistant-sample.db ollamaAssistant.db
+cd ../..
+```
+
+#### 3. Start Ollama
+Make sure Ollama is running:
+```bash
+ollama serve
+```
+
+#### 4. Run in Development Mode
+Start the Electron app with hot-reload:
+```bash
+npm run dev
+```
+This will:
+- Start the backend server on port 3000
+- Start the frontend dev server on port 5173
+- Launch the Electron desktop app
+
+#### 5. Build Distribution Package
+To create a distributable desktop application:
+
+**Step 1: Build the frontend and backend**
+```bash
+npm run build
+```
+This compiles both the frontend and backend for production.
+
+**Step 2: Create the distribution package**
+```bash
+npm run dist
+```
+
+The packaged application will be created in the `dist/` folder:
+- **macOS**: `.dmg` installer and `.app` bundle
+- **Windows**: `.exe` installer (if building on Windows)
+- **Linux**: `.AppImage` or `.deb` (if building on Linux)
+
+**Note**: By default, `electron-builder` creates packages for the current platform. To build for other platforms, see the [electron-builder documentation](https://www.electron.build/multi-platform-build).
 
 ## 📖 How to Use
 
@@ -98,6 +153,17 @@ npm run dev
 
 ## 🏗️ Architecture
 
-- **Backend**: Node.js, Express, Multer (uploads), PDF-Parse/Mammoth (text extraction)
-- **Frontend**: React, Vite, CSS Modules (modern dark theme)
+- **Backend**: Node.js, Express, Multer (uploads), PDF-Parse/Mammoth (text extraction), SQLite (database)
+- **Frontend**: React 19, TypeScript, Vite, CSS Modules (modern dark theme)
+- **Desktop**: Electron (cross-platform desktop app)
 - **AI Engine**: Ollama (local LLM inference)
+
+## 🎨 Features
+
+- **Custom Drag Region**: The desktop app features a custom draggable title bar area for a modern, frameless window experience
+- **macOS Integration**: Native traffic light buttons (close, minimize, maximize) with custom positioning
+- **Dark Theme**: Beautiful dark mode interface with glassmorphism effects
+- **Context Management**: Toggle document context on/off for each chat
+- **Chat History**: Save and load previous conversations
+- **Prompt Library**: Save and rate prompts for future use
+- **Model Switching**: Easily switch between different Ollama models mid-conversation

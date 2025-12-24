@@ -6,7 +6,7 @@
   height: 15px;
   background-color: transparent;
   -webkit-app-region: drag;
-  z-index: 99999;
+  z-index: 999999;
   pointer-events: auto; /* Must be auto for dragging to work */
   -webkit-user-select: none;
   user-select: none;

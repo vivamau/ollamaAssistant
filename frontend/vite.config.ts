@@ -5,4 +5,14 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: './',
+  css: {
+    postcss: {
+      plugins: [],
+    },
+  },
+  build: {
+    cssMinify: 'esbuild', // Use esbuild to preserve webkit properties
+    // Ensure Electron-specific CSS properties are preserved
+    cssCodeSplit: true,
+  },
 })
