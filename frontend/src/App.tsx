@@ -2,6 +2,7 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useRef } from 'react';
+import DragBar from './components/DragBar';
 import Sidebar from './components/Sidebar';
 import ChatInterface from './components/ChatInterface';
 import DocumentUploader from './components/DocumentUploader';
@@ -12,6 +13,7 @@ import ModelSelector from './components/ModelSelector';
 import PromptManager from './components/PromptManager';
 import Settings from './components/Settings';
 import './App.css';
+
 
 
 // Placeholder components for now
@@ -90,6 +92,7 @@ function App() {
 
   return (
     <Router>
+      <DragBar />
       <div className="app-container">
         <Sidebar onNavigationAttempt={handleNavigationAttempt} />
         <main className="main-content">

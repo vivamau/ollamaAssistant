@@ -57,6 +57,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Make interactive elements non-draggable so they remain clickable */
+button,
+input,
+textarea,
+select,
+a,
+[role="button"],
+.btn-primary,
+.nav-item {
+  -webkit-app-region: no-drag;
+}
+
 * {
   box-sizing: border-box;
 }

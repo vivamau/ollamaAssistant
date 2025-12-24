@@ -1,0 +1,18 @@
+.drag-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 15px;
+  background-color: transparent;
+  -webkit-app-region: drag;
+  z-index: 99999;
+  pointer-events: auto; /* Must be auto for dragging to work */
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: grab;
+}
+
+.drag-bar:active {
+  cursor: grabbing;
+}

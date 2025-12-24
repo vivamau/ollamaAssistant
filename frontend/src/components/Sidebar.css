@@ -6,12 +6,13 @@
   display: flex;
   flex-direction: column;
   padding: 1rem;
+  padding-top: 3rem; /* Extra space for macOS window controls */
   transition: width 300ms ease;
   position: relative;
 }
 
 .sidebar.collapsed {
-  width: 4rem;
+  width: 5rem;
 }
 
 .sidebar-toggle {
@@ -70,8 +71,8 @@
 }
 
 .app-logo {
-  width: 100%;
-  height: 100%;
+  width: 150%;
+  height: 150%;
   object-fit: contain;
 }
 
@@ -162,13 +163,13 @@
   height: 4rem;
 }
 
-/* Make interactive elements clickable in title bar area */
-.nav-item,
-.sidebar-toggle,
-button,
-a,
-input,
-textarea,
-select {
-  -webkit-app-region: no-drag;
+/* Theme-specific logo sizing */
+[data-theme="light"] .logo-container {
+  width: 8rem;
+  height: 8rem;
+}
+
+[data-theme="light"] .sidebar.collapsed .logo-container {
+  width: 4rem;
+  height: 4rem;
 }
