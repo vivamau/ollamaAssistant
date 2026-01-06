@@ -2,7 +2,6 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useRef } from 'react';
-import DragBar from './components/DragBar';
 import Sidebar from './components/Sidebar';
 import ChatInterface from './components/ChatInterface';
 import DocumentUploader from './components/DocumentUploader';
@@ -92,7 +91,6 @@ function App() {
 
   return (
     <Router>
-      <DragBar />
       <div className="app-container">
         <Sidebar onNavigationAttempt={handleNavigationAttempt} />
         <main className="main-content">

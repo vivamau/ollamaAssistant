@@ -17,8 +17,6 @@ function createWindow() {
     width: 1200,
     height: 800,
     icon: path.join(__dirname, 'icon.png'),
-    titleBarStyle: 'hidden', // Shows traffic lights but hides title bar
-    trafficLightPosition: { x: 10, y: 10 }, // Position of traffic light buttons
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false, // For simple ipc in this example, consider securing for prod
