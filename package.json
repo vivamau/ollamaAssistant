@@ -9,7 +9,12 @@
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "build": "npm run build:backend && npm run build:frontend",
-    "dist": "npm run build && electron-builder",
+    "dist": "npm run build && npm run download-node && electron-builder",
+    "dist:arm64": "npm run build && npm run download-node:arm64 && electron-builder --mac --arm64",
+    "dist:x64": "npm run build && npm run download-node:x64 && electron-builder --mac --x64",
+    "download-node": "node scripts/download-node.js",
+    "download-node:arm64": "node scripts/download-node.js arm64",
+    "download-node:x64": "node scripts/download-node.js x64",
     "build:backend": "cd backend && npm run build",
     "build:frontend": "cd frontend && npm run build",
     "postinstall": "cd backend && npm install && cd ../frontend && npm install"
@@ -47,11 +52,26 @@
         "from": "backend/data",
         "to": "backend/data",
         "filter": ["**/*"]
+      },
+      {
+        "from": "bundled-node",
+        "to": "bundled-node"
       }
     ],
     "mac": {
       "category": "public.app-category.productivity",
-      "icon": "electron/icon.png"
+      "icon": "electron/icon.png",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
     }
   }
 }

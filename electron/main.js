@@ -2,7 +2,7 @@ const { app, BrowserWindow, dialog } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
-const os = require('os');
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -52,16 +52,31 @@ function startBackend() {
   // In production (packaged app), backend is in extraResources
   // In dev, it's relative to electron/main.js
   let backendPath;
+  let nodePath;
   
   if (isDev) {
     backendPath = path.join(__dirname, '../backend');
+    nodePath = 'node'; // Use system node in development
   } else {
     // extraResources are in Contents/Resources/ on Mac
     // process.resourcesPath points to Contents/Resources
     backendPath = path.join(process.resourcesPath, 'backend');
+    // Use bundled node binary in production
+    nodePath = path.join(process.resourcesPath, 'bundled-node', 'node');
   }
 
   const serverPath = path.join(backendPath, 'dist/server.js');
+  
+  // Check if bundled node exists (production only)
+  if (!isDev && !fs.existsSync(nodePath)) {
+    console.error('Bundled Node.js not found!', nodePath);
+    dialog.showErrorBox('Node.js Error', 
+      `Bundled Node.js binary not found at: ${nodePath}\n\n` +
+      `This app requires the bundled Node.js to run.\n` +
+      `Please reinstall the application.`
+    );
+    return;
+  }
   
   if (!fs.existsSync(serverPath)) {
     console.error('Backend build not found!', serverPath);
@@ -69,56 +84,26 @@ function startBackend() {
     return;
   }
 
-  console.log('Starting backend process from:', serverPath);
+  console.log('Starting backend process...');
+  console.log('  Node path:', nodePath);
+  console.log('  Server path:', serverPath);
+  console.log('  Backend path:', backendPath);
   
-  // Fix PATH for macOS GUI apps
-  // Add common user-level paths
-  const homeDir = os.homedir();
-  
-  // Construct potential NVM paths (checking specific versions is hard, but we can try generic approaches or just assume user might have symlinks)
-  // Actually, simplest is to check common bin folders
-  const commonPaths = [
-    '/opt/homebrew/bin',
-    '/usr/local/bin',
-    '/usr/bin',
-    '/bin',
-    '/usr/sbin',
-    '/sbin',
-    path.join(homeDir, '.nvm/versions/node'), // we'd need to find versions, skip for now.
-    // better: path.join(homeDir, '.webi/bin') etc. 
-    // Just add generic /Users/user/bin
-    path.join(homeDir, 'bin')
-  ];
-
-  // If we can't find node in PATH, we can try to "guess" or ask the user to symlink it.
-  // BUT: The user who is building this has 'node' in their terminal. 
-  // Let's rely on 'fix-path' module logic manually.
-  
-  // Check if we can execute 'node -v' with current fixPath. 
-  // If not, we fall back to absolute path if we can find it? No.
-  
-  const fixPathString = process.platform === 'darwin' ? commonPaths.join(':') : process.env.PATH;
-
   const env = { 
     ...process.env, 
     PORT: 3001, // Use different port for production to avoid conflicts with dev server
-    PATH: fixPathString + (process.platform === 'win32' ? ';' : ':') + (process.env.PATH || ''),
     APP_DATA_PATH: app.getPath('userData'),
     NODE_PATH: path.join(backendPath, 'node_modules')
   };
-  
-  // DEBUG: Print PATH to finding issues
-  console.log('Spawning backend with PATH:', env.PATH);
-  console.log('Backend path:', backendPath);
-  console.log('Server path:', serverPath);
 
   let backendOutput = '';
 
-  backendProcess = spawn('node', [serverPath], {
+  backendProcess = spawn(nodePath, [serverPath], {
     cwd: backendPath,
     stdio: ['ignore', 'pipe', 'pipe'], // Capture stdout and stderr
     env: env
   });
+
 
   // Capture stdout
   backendProcess.stdout.on('data', (data) => {
@@ -136,12 +121,11 @@ function startBackend() {
 
   backendProcess.on('error', (err) => {
     console.error('Failed to start backend:', err);
-    // Show exact PATH used in error box to help debug
     dialog.showErrorBox('Backend Start Failed', 
       `Error: ${err.message}\n` +
       `Code: ${err.code}\n` +
-      `PATH used: ${env.PATH}\n` + 
-      `Try running: 'sudo ln -s $(which node) /usr/local/bin/node'`
+      `Node path: ${nodePath}\n\n` +
+      `Please try reinstalling the application.`
     );
   });
   

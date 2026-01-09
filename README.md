@@ -2,7 +2,29 @@
 
 A full-stack application to train (customize) Ollama models with your own documents. Upload PDFs, text files, or Word documents, and create specialized model variants to chat with.
 
-## 🚀 Prerequisites
+## 📥 Installing from DMG (End Users)
+
+If you received a `.dmg` file, follow these steps to install and run the app:
+
+### 1. Install Ollama
+Download and install [Ollama](https://ollama.com/) if you haven't already.
+
+### 2. Install the App
+1. Open the `.dmg` file
+2. Drag **Ollama Assistant** to your **Applications** folder
+3. **Important**: Since the app is not signed with an Apple Developer certificate, you need to remove the quarantine flag. Open **Terminal** and run:
+   ```bash
+   xattr -cr /Applications/ollama-assistant-desktop.app
+   ```
+
+### 3. Run the App
+1. Make sure Ollama is running (open the Ollama app or run `ollama serve` in Terminal)
+2. Open **Ollama Assistant** from your Applications folder
+3. Enjoy! 🎉
+
+---
+
+## 🚀 Prerequisites (For Developers)
 
 - [Node.js](https://nodejs.org/) (v16 or higher)
 - [Ollama](https://ollama.com/) installed and running locally
@@ -125,7 +147,23 @@ npm run build
 This compiles both the frontend and backend for production.
 
 **Step 2: Create the distribution package**
+
+Choose the appropriate command based on the target Mac architecture:
+
+| Target Mac | Command | Description |
+|------------|---------|-------------|
+| **Apple Silicon** (M1/M2/M3/M4) | `npm run dist:arm64` | Creates DMG for arm64 architecture |
+| **Intel** | `npm run dist:x64` | Creates DMG for x64 architecture |
+| **Current machine** | `npm run dist` | Creates DMG for your current architecture |
+
 ```bash
+# For Apple Silicon Macs (M1/M2/M3/M4)
+npm run dist:arm64
+
+# For Intel Macs
+npm run dist:x64
+
+# For your current architecture
 npm run dist
 ```
 
@@ -133,6 +171,15 @@ The packaged application will be created in the `dist/` folder:
 - **macOS**: `.dmg` installer and `.app` bundle
 - **Windows**: `.exe` installer (if building on Windows)
 - **Linux**: `.AppImage` or `.deb` (if building on Linux)
+
+**⚠️ Important Notes for macOS Distribution:**
+
+1. **Unsigned App Warning**: Since the app is not signed with an Apple Developer certificate, recipients will need to remove the quarantine flag before opening:
+   ```bash
+   xattr -cr /Applications/ollama-assistant-desktop.app
+   ```
+
+2. **Native Dependencies**: The `sqlite3` module is compiled for the architecture you build on. If you need to distribute to both Intel and Apple Silicon Macs, you must build separately for each architecture (ideally using CI/CD).
 
 **Note**: By default, `electron-builder` creates packages for the current platform. To build for other platforms, see the [electron-builder documentation](https://www.electron.build/multi-platform-build).
 
