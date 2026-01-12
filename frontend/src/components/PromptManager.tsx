@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Loader2, FileCode, Eye, Copy, Check, X, Bot } from 'lucide-react';
+import { Plus, Edit2, Trash2, Loader2, FileCode, Eye, Copy, Check, X, Bot, Download } from 'lucide-react';
+import ExcelJS from 'exceljs';
 
 interface Prompt {
   ID: number;
@@ -137,22 +138,106 @@ const PromptManager: React.FC = () => {
     }
   };
 
+  const handleExport = async () => {
+    // Create workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    workbook.created = new Date();
+    workbook.modified = new Date();
+    
+    const worksheet = workbook.addWorksheet('Prompts');
+
+    // Define columns with headers and widths
+    worksheet.columns = [
+      { header: 'ID', key: 'id', width: 8 },
+      { header: 'Prompt', key: 'prompt', width: 60 },
+      { header: 'Tags', key: 'tags', width: 20 },
+      { header: 'Models', key: 'models', width: 25 },
+      { header: 'Quality Rating', key: 'qualityRating', width: 14 },
+      { header: 'Comment', key: 'comment', width: 40 },
+      { header: 'Created At', key: 'createdAt', width: 22 },
+      { header: 'Updated At', key: 'updatedAt', width: 22 }
+    ];
+
+    // Style header row
+    worksheet.getRow(1).font = { bold: true };
+    worksheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FF4F46E5' }
+    };
+    worksheet.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+
+    // Add data rows
+    prompts.forEach((prompt) => {
+      worksheet.addRow({
+        id: prompt.ID,
+        prompt: prompt.prompt,
+        tags: prompt.tags || '',
+        models: prompt.model_names?.join(', ') || '',
+        qualityRating: prompt.quality_rating || '',
+        comment: prompt.comment || '',
+        createdAt: new Date(prompt.created_at * 1000).toLocaleString('en-GB', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        updatedAt: prompt.updated_at 
+          ? new Date(prompt.updated_at * 1000).toLocaleString('en-GB', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+          : ''
+      });
+    });
+
+    // Generate filename with timestamp
+    const timestamp = new Date().toISOString().slice(0, 10);
+    const filename = `prompts_export_${timestamp}.xlsx`;
+
+    // Generate buffer and download
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="prompt-manager-container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div/>
-        <button
-          onClick={() => {
-            setFormData({ prompt: '', tags: '', modelIds: [], quality_rating: null, comment: '' });
-            setEditingId(null);
-            setShowForm(!showForm);
-          }}
-          className="btn-primary"
-          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-        >
-          <Plus size={16} />
-          New Prompt
-        </button>
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          {prompts.length > 0 && (
+            <button
+              onClick={handleExport}
+              className="btn-secondary"
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <Download size={16} />
+              Export
+            </button>
+          )}
+          <button
+            onClick={() => {
+              setFormData({ prompt: '', tags: '', modelIds: [], quality_rating: null, comment: '' });
+              setEditingId(null);
+              setShowForm(!showForm);
+            }}
+            className="btn-primary"
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            <Plus size={16} />
+            New Prompt
+          </button>
+        </div>
       </div>
 
 
@@ -506,12 +591,12 @@ const PromptManager: React.FC = () => {
             <tbody>
               {prompts.map((prompt) => (
                 <tr key={prompt.ID} className="data-row">
-                  <td>
+                  <td style={{ width: '50%' }}>
                     <div style={{ 
                       maxWidth: '100%', 
-                      overflow: 'hidden', 
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
+                      wordBreak: 'break-word',
+                      whiteSpace: 'pre-wrap',
+                      lineHeight: '1.5'
                     }}>
                       {prompt.prompt}
                     </div>
