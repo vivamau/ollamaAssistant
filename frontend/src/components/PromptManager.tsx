@@ -218,8 +218,22 @@ const PromptManager: React.FC = () => {
           {prompts.length > 0 && (
             <button
               onClick={handleExport}
-              className="btn-secondary"
-              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '0.5rem',
+                background: 'var(--text-tertiary)',
+                color: 'white',
+                border: 'none',
+                padding: '0.45rem 0.6rem',
+                borderRadius: '0.5rem',
+                fontWeight: 600,
+                fontSize: '0.7rem',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'var(--text-secondary)'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'var(--text-tertiary)'}
             >
               <Download size={16} />
               Export
