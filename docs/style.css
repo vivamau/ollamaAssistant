@@ -290,7 +290,8 @@ Intro
     height: 20em;
   }
   .intro header h1 {
-    background: yellow;
+    background: #f15a30;
+    font-size: 250%;
   }
 }
 
