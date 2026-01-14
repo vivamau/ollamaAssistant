@@ -196,9 +196,9 @@ acronym[title] {
 }
 html,
 body {
-  font-family: "ff-meta-web-pro", sans-serif;
+  font-family: "Open Sans", sans-serif;
   text-rendering: optimizeLegibility;
-  font-size: 100%;
+  font-size: 110%;
   line-height: 26px;
   background: #f6efe5;
   background-size: 60%;
@@ -441,7 +441,7 @@ Main
 ==========================================================================
 */
 .main {
-  background: url(mid-century-5-new.jpg) no-repeat center center;
+  background: url(screens.jpg) no-repeat center center;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -497,13 +497,11 @@ Main
   }
 }
 .main .explanation {
-  background: #222d3f url(icon-half-new.svg);
-  background-repeat: no-repeat;
-  background-position: right center;
+  background: rgb(240, 91, 49, 0.85) url(icon-half-new.svg) no-repeat right;
   background-size: 40%;
   position: relative;
   color: #ffffff;
-  width: 40%;
+  width: 50%;
   margin: 0;
   padding: 2em 1em;
   -webkit-box-sizing: border-box;
