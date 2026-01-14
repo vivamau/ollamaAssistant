@@ -291,7 +291,16 @@ Intro
   }
   .intro header h1 {
     background: #f15a30;
-    font-size: 300%;
+  }
+}
+
+@media (max-width: 40em) {
+  .intro header {
+    height: 20em;
+  }
+  .intro header h1 {
+    background: #f15a30;
+    font-size: 200%;
   }
 }
 
