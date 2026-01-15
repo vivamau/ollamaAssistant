@@ -570,7 +570,7 @@ Main
     padding-left: 0;
   }
 }
-.main .participation {
+.main .contribute {
   background: #f6efe5;
   position: absolute;
   right: 40%;
@@ -583,24 +583,24 @@ Main
   box-sizing: border-box;
 }
 @media (max-width: 70em) {
-  .main .participation {
+  .main .contribute {
     margin-top: 20em;
     width: 66.866%;
     right: 33.2%;
   }
 }
 @media (max-width: 53em) {
-  .main .participation {
+  .main .contribute {
     position: relative;
     margin-top: 0;
     width: 100%;
     right: 0;
   }
 }
-.main .participation h3 {
+.main .contribute h3 {
   font-size: 150%;
 }
-.main .benefits {
+.main .credits {
   background: rgba(0, 188, 217, 0.8) url(sparkles-white.svg) no-repeat left top;
   background-size: 100%;
   position: absolute;
@@ -615,7 +615,7 @@ Main
   box-sizing: border-box;
 }
 @media (max-width: 70em) {
-  .main .benefits {
+  .main .credits {
     right: 0;
     width: 33.25%;
     margin-top: 12em;
@@ -623,7 +623,7 @@ Main
   }
 }
 @media (max-width: 53em) {
-  .main .benefits {
+  .main .credits {
     background: rgba(0, 188, 217, 0.8) url(icon-circles.svg) no-repeat center
       top;
     background-size: 33%;
@@ -635,7 +635,7 @@ Main
   }
 }
 @media (max-width: 33em) {
-  .main .benefits {
+  .main .credits {
     background: rgba(0, 188, 217, 0.8) url(icon-circles.svg) no-repeat center
       top;
     background-size: 33%;
@@ -646,7 +646,7 @@ Main
     padding: 7em 1em 1em 1em;
   }
 }
-.main .benefits h3 {
+.main .credits h3 {
   font-size: 150%;
 }
 .main .requirements {
